@@ -1,6 +1,11 @@
 import { useState, useEffect} from 'react';
 
 import { BrowserRouter as Router, Routes, Route } from "react-router";
+
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/app-sidebar';
+import { SiteHeader } from '@/components/site-header';
+
 import Navbar from '@/components/Navbar';
 import Home from '@/pages/Home';
 
@@ -10,29 +15,65 @@ import DoctorsShow from '@/pages/doctors/Show';
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+
+    if (token) {
+      setLoggedIn(true);
+    }
+
+  }, []);
+
   const onLogin = (auth, token) => {
     setLoggedIn(auth);
 
     if (auth) {
       localStorage.setItem('token', token)
-    }
-    else {
+    } else {
       localStorage.removeItem('token');
     }
   };
 
   return (
-    <>
-      <Router>
-        <Navbar onLogin={onLogin} loggedIn={loggedIn} />
-        <Routes>
-          <Route path='/' element={<Home onLogin={onLogin} loggedIn={loggedIn} />} />
+    <Router>
+      <SidebarProvider
+        style={{
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        }}
+      >
+        <AppSidebar variant="inset" loggedIn={loggedIn} onLogin={onLogin} />
+        <SidebarInset>
+          <SiteHeader />
+          {/* <Navbar onLogin={onLogin} loggedIn={loggedIn} /> */}
 
-          <Route path="/doctors" element={<DoctorsIndex />} />
-          <Route path="/doctors/:id" element={<DoctorsShow loggedIn={loggedIn} />} />
+          <div className="flex flex-1 flex-col">
+            <div className="@container/main flex flex-1 flex-col gap-2">
+              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 mx-6">
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<Home onLogin={onLogin} loggedIn={loggedIn} />}
+                  />
 
-        </Routes>
-      </Router>
-    </>
-  )
+                  {/* Doctors List */}
+                  <Route path="/doctors" element={<DoctorsIndex />} />
+
+                  {/* Doctors Show Page */}
+                  <Route
+                    path="/doctors/:id"
+                    element={<DoctorsShow loggedIn={loggedIn} />}
+                  />
+
+                  {/* NO CREATE, NO EDIT */}
+                </Routes>
+
+              </div>
+            </div>
+          </div>
+
+        </SidebarInset>
+      </SidebarProvider>
+    </Router>
+  );
 }

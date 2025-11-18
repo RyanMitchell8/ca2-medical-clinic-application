@@ -15,43 +15,47 @@ import {
 import { Button } from '@/components/ui/button'
 
 export default function Index() {
-  const [festivals, setFestivals] = useState([]);
+  const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
-    const fetchFestivals = async () => {
+    const fetchDoctors = async () => {
       const options = {
         method: "GET",
-        url: "https://festivals-api.vercel.app/festivals",
+        url: "https://ca2-med-api.vercel.app/doctors",
       };
 
       try {
         let response = await axios.request(options);
         console.log(response.data);
-        setFestivals(response.data);
+        setDoctors(response.data);
       } catch (err) {
         console.log(err);
       }
     };
 
-    fetchFestivals();
+    fetchDoctors();
   }, []);
 
-  const festivalCards = festivals.map((festival) => {
+  const doctorCards = doctors.map((doctor) => {
     return (
-      <Card key={festival.id}>  
+      <Card key={doctor.id}>  
         <CardHeader>
-          <CardTitle>{festival.title}</CardTitle>
-          <CardDescription>{festival.description}</CardDescription>
-          {/* <CardAction>Card Action</CardAction> */}
+          <CardTitle>{doctor.first_name} {doctor.last_name}</CardTitle>
+          <CardDescription>{doctor.specialisation}</CardDescription>
         </CardHeader>
-        {/* <CardContent>
-          <p>Card Content</p>
-        </CardContent> */}
+
+        <CardContent>
+          <p>Email: {doctor.email}</p>
+          <p>Phone: {doctor.phone}</p>
+        </CardContent>
+
         <CardFooter>
           <Button
             asChild
             variant='outline'
-          ><Link size='md' to={`/festivals/${festival.id}`}>View</Link></Button>
+          >
+            <Link size='md' to={`/doctors/${doctor.id}`}>View</Link>
+          </Button>
         </CardFooter>
       </Card>
     );
@@ -59,8 +63,8 @@ export default function Index() {
 
   return (
     <>
-      <h1>Festivals page</h1>
-      {festivalCards}
+      <h1>Doctors page</h1>
+      {doctorCards}
     </>
   );
 }

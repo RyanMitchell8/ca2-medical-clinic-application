@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function LoginForm({loggedIn, onLogin}) {
+export default function LoginForm({ loggedIn, onLogin }) {
   const [form, setForm] = useState({});
 
   const handleForm = (e) => {
@@ -27,7 +27,7 @@ export default function LoginForm({loggedIn, onLogin}) {
     const fetchLogin = async () => {
       const options = {
         method: "POST",
-        url: "https://festivals-api.vercel.app/login",
+        url: "https://ca2-med-api.vercel.app/login",
         data: form
       };
 

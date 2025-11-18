@@ -3,32 +3,32 @@ import axios from "axios";
 import { useParams } from 'react-router';
 
 export default function Show() {
-  const [festival, setFestival] = useState([]);
+  const [doctor, setDoctor] = useState([]);
   const { id } = useParams();
 
   let token = localStorage.getItem('token');
 
   useEffect(() => {
-    const fetchFestival = async () => {
+    const fetchDoctor = async () => {
       const options = {
         method: "GET",
-        url: `https://festivals-api.vercel.app/festivals/${id}`,
+        url: `https://ca2-med-api.vercel.app/doctors/${id}`,
         headers: {
-            Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       };
 
       try {
         let response = await axios.request(options);
         console.log(response.data);
-        setFestival(response.data);
+        setDoctor(response.data);
       } catch (err) {
         console.log(err);
       }
     };
 
-    fetchFestival();
+    fetchDoctor();
   }, []);
 
-  return <>Show festival</>;
+  return <>Show doctor</>;
 }

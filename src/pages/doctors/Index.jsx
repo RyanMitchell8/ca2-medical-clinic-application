@@ -77,6 +77,10 @@ export default function Index() {
                 <Button asChild variant="outline" size="sm">
                   <Link to={`/doctors/${doctor.id}`}>View</Link>
                 </Button>
+
+                <Button asChild variant="outline" size="sm">
+                  <Link to={`/doctors/${doctor.id}/edit`}>Edit</Link>
+                </Button>
               </TableCell>
             </TableRow>
           ))}

@@ -12,7 +12,7 @@ import Home from '@/pages/Home';
 import DoctorsIndex from '@/pages/doctors/Index';
 import DoctorsShow from '@/pages/doctors/Show';
 import DoctorsCreate from '@/pages/doctors/Create';
-
+import DoctorsEdit from "@/pages/doctors/Edit";
 
 
 export default function App() {
@@ -52,7 +52,7 @@ export default function App() {
             <div className="@container/main flex flex-1 flex-col gap-2">
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 mx-6">
                 <Routes>
-                  
+
                   {/* Home */}
                   <Route
                     path="/"
@@ -63,6 +63,9 @@ export default function App() {
 
                   {/* Doctors Create Page */}
                   <Route path="/doctors/create" element={<DoctorsCreate />} />
+
+                  {/* Doctors Edit Page */}
+                  <Route path="/doctors/:id/edit" element={<DoctorsEdit />} />
 
                   {/* Doctors Show Page */}
                   <Route

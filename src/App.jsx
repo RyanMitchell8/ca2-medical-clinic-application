@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 
@@ -11,6 +11,9 @@ import Home from '@/pages/Home';
 
 import DoctorsIndex from '@/pages/doctors/Index';
 import DoctorsShow from '@/pages/doctors/Show';
+import DoctorsCreate from '@/pages/doctors/Create';
+
+
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -45,19 +48,21 @@ export default function App() {
         <AppSidebar variant="inset" loggedIn={loggedIn} onLogin={onLogin} />
         <SidebarInset>
           <SiteHeader />
-          {/* <Navbar onLogin={onLogin} loggedIn={loggedIn} /> */}
-
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-2">
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 mx-6">
                 <Routes>
+                  
+                  {/* Home */}
                   <Route
                     path="/"
                     element={<Home onLogin={onLogin} loggedIn={loggedIn} />}
                   />
-
                   {/* Doctors List */}
                   <Route path="/doctors" element={<DoctorsIndex />} />
+
+                  {/* Doctors Create Page */}
+                  <Route path="/doctors/create" element={<DoctorsCreate />} />
 
                   {/* Doctors Show Page */}
                   <Route
@@ -65,7 +70,6 @@ export default function App() {
                     element={<DoctorsShow loggedIn={loggedIn} />}
                   />
 
-                  {/* NO CREATE, NO EDIT */}
                 </Routes>
 
               </div>

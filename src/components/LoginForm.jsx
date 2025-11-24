@@ -1,6 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
-
+import axios from "@/config/api";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,7 +26,7 @@ export default function LoginForm({ loggedIn, onLogin }) {
     const fetchLogin = async () => {
       const options = {
         method: "POST",
-        url: "https://ca2-med-api.vercel.app/login",
+        url: "/login",
         data: form
       };
 

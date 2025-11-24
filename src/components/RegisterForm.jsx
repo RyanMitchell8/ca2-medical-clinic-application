@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "@/config/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router";
@@ -26,7 +26,7 @@ export default function Register({ onLogin }) {
 
         const options = {
             method: "POST",
-            url: "https://ca2-med-api.vercel.app/register",
+            url: "/register",
             headers: { "Content-Type": "application/json" },
             data: form
         };

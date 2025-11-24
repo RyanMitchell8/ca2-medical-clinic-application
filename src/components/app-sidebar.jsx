@@ -6,10 +6,14 @@ import {
   IconMicrophone2,
   IconInnerShadowTop,
   IconMusic,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { useLocation } from "react-router";
+import { useEffect } from "react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -40,31 +44,53 @@ const data = {
   ]
 }
 
-export function AppSidebar({
-  onLogin,
-  loggedIn,
-  ...props
-}) {
+export function AppSidebar({ onLogin, loggedIn, ...props }) {
+  const location = useLocation();
+
+  console.log(location);
+
+  let message = location.state?.message;
+  let type = location.state?.type;
+
+  useEffect(() => {
+    if (message) {
+      if (type === 'error') {
+        toast.error(message);
+      }
+      else if (type === 'success') {
+        toast.success(message);
+      } else {
+        toast(message);
+      }
+    }
+  }, [message]);
+
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:p-1.5!">
-              <a href="#">
-                <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} onLogin={onLogin}  />
-      </SidebarFooter>
-    </Sidebar>
+    <>
+      <Toaster position="top-center" richColors />
+      <Sidebar collapsible="offcanvas" {...props}>
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                className="data-[slot=sidebar-menu-button]:p-1.5!"
+              >
+                <a href="#">
+                  <IconInnerShadowTop className="size-5!" />
+                  <span className="text-base font-semibold">Acme Inc.</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={data.navMain} />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={data.user} onLogin={onLogin} />
+        </SidebarFooter>
+      </Sidebar>
+    </>
   );
 }

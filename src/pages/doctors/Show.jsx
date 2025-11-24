@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "@/config/api";
 import { useParams, Link } from "react-router";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ export default function Show() {
     const fetchDoctor = async () => {
       const options = {
         method: "GET",
-        url: `https://ca2-med-api.vercel.app/doctors/${id}`,
+        url: `/doctors/${id}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },

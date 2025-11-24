@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
+import axios from "@/config/api";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 
@@ -22,7 +22,7 @@ export default function Edit() {
         const fetchDoctor = async () => {
             const options = {
                 method: "GET",
-                url: `https://ca2-med-api.vercel.app/doctors/${id}`,
+                url: `/doctors/${id}`,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -59,7 +59,7 @@ export default function Edit() {
     const updateDoctor = async () => {
         const options = {
             method: "PATCH",
-            url: `https://ca2-med-api.vercel.app/doctors/${id}`,
+            url: `/doctors/${id}`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },

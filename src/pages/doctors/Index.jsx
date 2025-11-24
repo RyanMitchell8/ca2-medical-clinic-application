@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { Link } from "react-router";
+import axios from "@/config/api";
+import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
+import { Eye, Pencil } from "lucide-react";
+import DeleteBtn from "@/components/DeleteBtn";
 
 import {
   Table,
@@ -12,15 +14,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toast } from "sonner";
 
 export default function Index() {
   const [doctors, setDoctors] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDoctors = async () => {
       const options = {
         method: "GET",
-        url: "https://ca2-med-api.vercel.app/doctors",
+        url: "/doctors",
       };
 
       try {
@@ -34,6 +39,12 @@ export default function Index() {
 
     fetchDoctors();
   }, []);
+
+  const onDeleteCallback = (id) => {
+    toast.success("Doctor deleted successfully");
+    setDoctors(doctors.filter(doctor => doctor.id !== id));
+  
+  };
 
   return (
     <>
@@ -61,6 +72,7 @@ export default function Index() {
             <TableHead>Phone</TableHead>
             <TableHead>Specialisation</TableHead>
             <TableHead>View</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
 
@@ -74,14 +86,23 @@ export default function Index() {
               <TableCell>{doctor.specialisation}</TableCell>
 
               <TableCell>
-                <Button asChild variant="outline" size="sm">
-                  <Link to={`/doctors/${doctor.id}`}>View</Link>
-                </Button>
+              <div className="flex gap-2">
+              <Button 
+                className="cursor-pointer hover:border-blue-500"
+                variant="outline"
+                size="icon"
+                onClick={() => navigate(`/doctors/${doctor.id}`)}
+              ><Eye /></Button>
+              <Button 
+                className="cursor-pointer hover:border-blue-500"
+                variant="outline"
+                size="icon"
+                onClick={() => navigate(`/doctors/${doctor.id}/edit`)}
+              ><Pencil /></Button>
+              <DeleteBtn onDeleteCallback={onDeleteCallback} resource="doctors" id={doctor.id} />
+              </div>
 
-                <Button asChild variant="outline" size="sm">
-                  <Link to={`/doctors/${doctor.id}/edit`}>Edit</Link>
-                </Button>
-              </TableCell>
+            </TableCell>
             </TableRow>
           ))}
         </TableBody>

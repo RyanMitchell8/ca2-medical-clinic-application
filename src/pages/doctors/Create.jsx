@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import axios from 'axios';
+import axios from "@/config/api";
 import { useNavigate } from 'react-router';
 
 export default function Create() {
@@ -27,7 +27,7 @@ export default function Create() {
 
         const options = {
             method: "POST",
-            url: `https://ca2-med-api.vercel.app/doctors`,
+            url: "/doctors",
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -37,7 +37,10 @@ export default function Create() {
         try {
             let response = await axios.request(options);
             console.log(response.data);
-            navigate('/doctors');
+            navigate('/doctors', { state: { 
+                type: 'success',
+                message: `Doctor "${response.data.first_name} ${response.data.last_name}" created successfully` 
+            }});
         } catch (err) {
             console.log(err);
         }

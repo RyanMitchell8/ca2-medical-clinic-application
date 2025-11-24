@@ -3,6 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import axios from "@/config/api";
 import { useNavigate } from 'react-router';
+import { useAuth } from "@/hooks/useAuth";
+
+
 
 export default function Create() {
     const [form, setForm] = useState({
@@ -14,6 +17,7 @@ export default function Create() {
     });
 
     const navigate = useNavigate();
+    const { token } = useAuth();
 
     const handleChange = (e) => {
         setForm({
@@ -23,7 +27,6 @@ export default function Create() {
     };
 
     const createDoctor = async () => {
-        const token = localStorage.getItem("token");
 
         const options = {
             method: "POST",

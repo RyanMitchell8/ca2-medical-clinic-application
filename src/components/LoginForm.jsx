@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "@/config/api";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Card,
   CardAction,
@@ -13,8 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function LoginForm({ loggedIn, onLogin }) {
+export default function LoginForm() {
   const [form, setForm] = useState({});
+  const { onLogin } = useAuth();
 
   const handleForm = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,27 +24,9 @@ export default function LoginForm({ loggedIn, onLogin }) {
 
   const submitForm = (e) => {
     e.preventDefault();
-
-    const fetchLogin = async () => {
-      const options = {
-        method: "POST",
-        url: "/login",
-        data: form
-      };
-
-      try {
-        let response = await axios.request(options);
-        console.log(response.data);
-
-        onLogin(true, response.data.token);
-      } catch (err) {
-        console.log(err.response.data);
-      }
-    };
-
-    fetchLogin();
-
     console.log(form);
+
+    onLogin(form.email, form.password);
   };
 
   return (

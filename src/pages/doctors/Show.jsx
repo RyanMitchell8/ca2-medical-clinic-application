@@ -3,11 +3,12 @@ import axios from "@/config/api";
 import { useParams, Link } from "react-router";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Show() {
   const [doctor, setDoctor] = useState(null);
   const { id } = useParams();
-  const token = localStorage.getItem("token");
+  const { token } = useAuth();
 
   useEffect(() => {
     const fetchDoctor = async () => {

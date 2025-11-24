@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { AuthProvider } from './hooks/useAuth';
 
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 
@@ -16,36 +17,17 @@ import DoctorsEdit from "@/pages/doctors/Edit";
 
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  useEffect(() => {
-    let token = localStorage.getItem("token");
-
-    if (token) {
-      setLoggedIn(true);
-    }
-
-  }, []);
-
-  const onLogin = (auth, token) => {
-    setLoggedIn(auth);
-
-    if (auth) {
-      localStorage.setItem('token', token)
-    } else {
-      localStorage.removeItem('token');
-    }
-  };
 
   return (
     <Router>
+      <AuthProvider>
       <SidebarProvider
         style={{
           "--sidebar-width": "calc(var(--spacing) * 72)",
           "--header-height": "calc(var(--spacing) * 12)",
         }}
       >
-        <AppSidebar variant="inset" loggedIn={loggedIn} onLogin={onLogin} />
+        <AppSidebar variant="inset"/>
         <SidebarInset>
           <SiteHeader />
           <div className="flex flex-1 flex-col">
@@ -56,7 +38,7 @@ export default function App() {
                   {/* Home */}
                   <Route
                     path="/"
-                    element={<Home onLogin={onLogin} loggedIn={loggedIn} />}
+                    element={<Home/>}
                   />
                   {/* Doctors List */}
                   <Route path="/doctors" element={<DoctorsIndex />} />
@@ -70,7 +52,7 @@ export default function App() {
                   {/* Doctors Show Page */}
                   <Route
                     path="/doctors/:id"
-                    element={<DoctorsShow loggedIn={loggedIn} />}
+                    element={<DoctorsShow/>}
                   />
 
                 </Routes>
@@ -81,6 +63,7 @@ export default function App() {
 
         </SidebarInset>
       </SidebarProvider>
+      </AuthProvider>
     </Router>
   );
 }

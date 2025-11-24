@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { AuthProvider } from './hooks/useAuth';
 
 import { BrowserRouter as Router, Routes, Route } from "react-router";
@@ -7,62 +6,64 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SiteHeader } from '@/components/site-header';
 
-import Navbar from '@/components/Navbar';
 import Home from '@/pages/Home';
 
+// Doctors Pages //
 import DoctorsIndex from '@/pages/doctors/Index';
 import DoctorsShow from '@/pages/doctors/Show';
 import DoctorsCreate from '@/pages/doctors/Create';
 import DoctorsEdit from "@/pages/doctors/Edit";
 
+// Patients Pages //
+import PatientsIndex from "@/pages/patients/Index";
+import PatientsShow from "@/pages/patients/Show";
+import PatientsCreate from "@/pages/patients/Create";
+import PatientsEdit from "@/pages/patients/Edit";
 
 export default function App() {
 
   return (
     <Router>
       <AuthProvider>
-      <SidebarProvider
-        style={{
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        }}
-      >
-        <AppSidebar variant="inset"/>
-        <SidebarInset>
-          <SiteHeader />
-          <div className="flex flex-1 flex-col">
-            <div className="@container/main flex flex-1 flex-col gap-2">
-              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 mx-6">
-                <Routes>
+        <SidebarProvider
+          style={{
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          }}
+        >
+          <AppSidebar variant="inset" />
+          <SidebarInset>
+            <SiteHeader />
 
-                  {/* Home */}
-                  <Route
-                    path="/"
-                    element={<Home/>}
-                  />
-                  {/* Doctors List */}
-                  <Route path="/doctors" element={<DoctorsIndex />} />
+            <div className="flex flex-1 flex-col">
+              <div className="flex flex-1 flex-col gap-2">
+                <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 mx-6">
 
-                  {/* Doctors Create Page */}
-                  <Route path="/doctors/create" element={<DoctorsCreate />} />
+                  <Routes>
 
-                  {/* Doctors Edit Page */}
-                  <Route path="/doctors/:id/edit" element={<DoctorsEdit />} />
+                    {/* Home */}
+                    <Route path="/" element={<Home />} />
 
-                  {/* Doctors Show Page */}
-                  <Route
-                    path="/doctors/:id"
-                    element={<DoctorsShow/>}
-                  />
+                    {/* Doctors Routes */}
+                    <Route path="/doctors" element={<DoctorsIndex />} />
+                    <Route path="/doctors/create" element={<DoctorsCreate />} />
+                    <Route path="/doctors/:id/edit" element={<DoctorsEdit />} />
+                    <Route path="/doctors/:id" element={<DoctorsShow />} />
 
-                </Routes>
+                    {/* Patients Routes */}
+                    <Route path="/patients" element={<PatientsIndex />} />
+                    <Route path="/patients/create" element={<PatientsCreate />} />
+                    <Route path="/patients/:id/edit" element={<PatientsEdit />} />
+                    <Route path="/patients/:id" element={<PatientsShow />} />
 
+                  </Routes>
+
+                </div>
               </div>
             </div>
-          </div>
 
-        </SidebarInset>
-      </SidebarProvider>
+          </SidebarInset>
+        </SidebarProvider>
       </AuthProvider>
     </Router>
   );

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "@/config/api";
 import { useParams, Link } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { formatDate } from "@/utils/formatDate";
 
 import {
     Card,
@@ -72,7 +73,7 @@ export default function Show() {
                 <CardContent className="space-y-2">
                     <p><strong>Email:</strong> {patient.email}</p>
                     <p><strong>Phone:</strong> {patient.phone}</p>
-                    <p><strong>Date of Birth:</strong> {patient.date_of_birth}</p>
+                    <p><strong>Date of Birth:</strong> {formatDate(patient.date_of_birth)}</p>
                     <p><strong>Address:</strong> {patient.address}</p>
                 </CardContent>
 
@@ -110,7 +111,7 @@ export default function Show() {
                                 {appointments.map((appointment) => (
                                     <TableRow key={appointment.id}>
                                         <TableCell>{appointment.id}</TableCell>
-                                        <TableCell>{appointment.appointment_date}</TableCell>
+                                        <TableCell>{formatDate(appointment.appointment_date)}</TableCell>
                                         <TableCell>{appointment.doctor_id}</TableCell>
                                     </TableRow>
                                 ))}

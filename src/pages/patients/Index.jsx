@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
+import { formatDate } from "@/utils/formatDate";
 
 import {
     Table,
@@ -79,7 +80,7 @@ export default function Index() {
                             <TableCell>{patient.last_name}</TableCell>
                             <TableCell>{patient.email}</TableCell>
                             <TableCell>{patient.phone}</TableCell>
-                            <TableCell>{patient.date_of_birth}</TableCell>
+                            <TableCell>{formatDate(patient.date_of_birth)}</TableCell>
 
                             <TableCell>
                                 <div className="flex gap-2">

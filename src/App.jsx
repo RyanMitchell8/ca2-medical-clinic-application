@@ -20,6 +20,13 @@ import PatientsShow from "@/pages/patients/Show";
 import PatientsCreate from "@/pages/patients/Create";
 import PatientsEdit from "@/pages/patients/Edit";
 
+// Appointments Pages //
+import AppointmentsIndex from "@/pages/appoinments/Index";
+import AppointmentsShow from "@/pages/appoinments/Show";
+import AppointmentsCreate from "@/pages/appoinments/Create";
+import AppointmentsEdit from "@/pages/appoinments/Edit";
+
+
 export default function App() {
 
   return (
@@ -55,6 +62,12 @@ export default function App() {
                     <Route path="/patients/create" element={<PatientsCreate />} />
                     <Route path="/patients/:id/edit" element={<PatientsEdit />} />
                     <Route path="/patients/:id" element={<PatientsShow />} />
+
+                    {/* Appointments Routes */}
+                    <Route path="/appointments" element={<AppointmentsIndex />} />
+                    <Route path="/appointments/:id" element={<AppointmentsShow />} />
+                    <Route path="/appointments/create" element={<AppointmentsCreate />} />
+                    <Route path="/appointments/:id/edit" element={<AppointmentsEdit />} />
 
                   </Routes>
 

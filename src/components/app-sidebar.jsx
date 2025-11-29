@@ -46,6 +46,11 @@ const data = {
       url: "/patients",
       icon: IconUsers,
     },
+    {
+      title: "Appointments",
+      url: "/appointments",
+      icon: IconUsers,
+    },
   ]
 }
 

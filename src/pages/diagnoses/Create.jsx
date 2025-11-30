@@ -13,7 +13,6 @@ export default function Create() {
         diagnosis_date: "",
     });
 
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { token } = useAuth();
 
@@ -25,7 +24,6 @@ export default function Create() {
     };
 
     const createDiagnosis = async () => {
-        setLoading(true);
 
         const options = {
             method: "POST",
@@ -54,8 +52,6 @@ export default function Create() {
         } catch (err) {
             console.log(err);
 
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -99,9 +95,9 @@ export default function Create() {
                 <Button
                     type="submit"
                     variant="outline"
-                    disabled={loading}
-                >
-                    {loading ? "Creating..." : "Create"}
+                    className="mt-4 cursor-pointer"                
+                    >
+                    Create Diagnosis  
                 </Button>
 
             </form>

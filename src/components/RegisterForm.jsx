@@ -1,10 +1,11 @@
+// ...existing code...
 import { useState } from "react";
-import axios from "@/config/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router";
+import { useAuth } from "@/hooks/useAuth";
 
-export default function Register({ onLogin }) {
+export default function Register() {
     const [form, setForm] = useState({
         first_name: "",
         last_name: "",
@@ -13,6 +14,7 @@ export default function Register({ onLogin }) {
     });
 
     const navigate = useNavigate();
+    const { register } = useAuth();
 
     const handleChange = (e) => {
         setForm({
@@ -24,23 +26,8 @@ export default function Register({ onLogin }) {
     const submitForm = async (e) => {
         e.preventDefault();
 
-        const options = {
-            method: "POST",
-            url: "/register",
-            headers: { "Content-Type": "application/json" },
-            data: form
-        };
-
         try {
-            let response = await axios.request(options);
-            console.log(response.data);
-
-            // save token if the API returns one
-            if (response.data.token) {
-                localStorage.setItem("token", response.data.token);
-                onLogin(true, response.data.token);
-            }
-
+            await register(form);
             navigate("/doctors");
         } catch (err) {
             console.log(err);

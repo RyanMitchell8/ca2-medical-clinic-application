@@ -36,21 +36,51 @@ export const AuthProvider = ({ children }) => {
             console.log(response.data);
             localStorage.setItem("token", response.data.token);
             setToken(response.data.token);
-
+            axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+            return response.data;
         } catch (err) {
-            console.log(err.response.data);
+            console.log(err.response?.data || err.message);
+            throw err;
+        }
+    };
+
+    const register = async (formData) => {
+        const options = {
+            method: "POST",
+            url: "/register",
+            data: formData
+        };
+
+        try {
+            let response = await axios.request(options);
+            console.log(response.data);
+
+            if (response.data.token) {
+                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("user", JSON.stringify(response.data.user || response.data));
+                setToken(response.data.token);
+                axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+            }
+
+            return response.data;
+        } catch (err) {
+            console.log(err.response?.data || err.message);
+            throw err;
         }
     };
 
     const onLogout = () => {
         setToken(null);
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        delete axios.defaults.headers.common["Authorization"];
     };
 
     const value = {
         token,
         onLogin,
-        onLogout
+        onLogout,
+        register
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

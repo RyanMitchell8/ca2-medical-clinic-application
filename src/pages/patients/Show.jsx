@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
-
 import {
     Table,
     TableBody,
@@ -29,98 +28,232 @@ export default function Show() {
 
     const [patient, setPatient] = useState(null);
     const [appointments, setAppointments] = useState([]);
+    const [prescriptions, setPrescriptions] = useState([]);
+    const [diagnoses, setDiagnoses] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Show/Hide logic for appointments, prescriptions, and diagnoses
+    const MAX_VISIBLE = 5;
+
+    const [showAllAppointments, setShowAllAppointments] = useState(false);
+    const [showAllPrescriptions, setShowAllPrescriptions] = useState(false);
+    const [showAllDiagnoses, setShowAllDiagnoses] = useState(false);
 
     useEffect(() => {
-        fetchPatient();
-        fetchAppointments();
-    }, [id]);
+        if (!token) return;
 
-    const fetchPatient = async () => {
-        try {
-            const { data } = await axios.get(`/patients/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setPatient(data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+        const fetchAll = async () => {
+            setLoading(true);
 
-    const fetchAppointments = async () => {
-        try {
-            const { data } = await axios.get(`/patients/${id}/appointments`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setAppointments(data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+            try {
+                const [patientRes, apptRes, presRes, diagRes] = await Promise.all([
+                    axios.get(`/patients/${id}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    axios.get(`/patients/${id}/appointments`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    axios.get(`/prescriptions`, {
+                        params: { patient_id: id },
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    axios.get(`/diagnoses`, {
+                        params: { patient_id: id },
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                ]);
 
-    if (!patient) return <p>Loading...</p>;
+                setPatient(patientRes.data);
+                setAppointments(apptRes.data || []);
+                setPrescriptions(presRes.data || []);
+                setDiagnoses(diagRes.data || []);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAll();
+    }, [id, token]);
+
+    if (loading || !patient) return <p>Loading patient...</p>;
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="space-y-10">
 
-            {/* Patient Card */}
-            <Card className="max-w-xl">
+            {/* Sticky Header */}
+            <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-sm border-b py-3">
+                <div className="flex items-center justify-between max-w-5xl mx-auto px-1">
+                    <h1 className="text-3xl font-bold tracking-tight">Patient Details</h1>
+
+                    <div className="flex gap-3">
+                        <Button asChild variant="outline">
+                            <Link to="/patients">Back</Link>
+                        </Button>
+
+                        <Button asChild>
+                            <Link to={`/patients/${patient.id}/edit`}>Edit</Link>
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Patient Information */}
+            <Card className="shadow-md border border-gray-200">
                 <CardHeader>
-                    <CardTitle>
+                    <CardTitle className="text-2xl font-semibold">
                         {patient.first_name} {patient.last_name}
                     </CardTitle>
                 </CardHeader>
 
-                <CardContent className="space-y-2">
-                    <p><strong>Email:</strong> {patient.email}</p>
-                    <p><strong>Phone:</strong> {patient.phone}</p>
-                    <p><strong>Date of Birth:</strong> {formatDate(patient.date_of_birth)}</p>
-                    <p><strong>Address:</strong> {patient.address}</p>
-                </CardContent>
-
-                <CardFooter className="flex gap-3">
-                    <Button asChild variant="outline">
-                        <Link to="/patients">Back</Link>
-                    </Button>
-
-                    <Button asChild variant="outline">
-                        <Link to={`/patients/${patient.id}/edit`}>Edit</Link>
-                    </Button>
-                </CardFooter>
-            </Card>
-
-            {/* Appointments Section */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Appointments</CardTitle>
-                </CardHeader>
-
-                <CardContent>
-                    {appointments.length === 0 ? (
-                        <p>No appointments found for this patient.</p>
-                    ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>ID</TableHead>
-                                    <TableHead>Appointment Date</TableHead>
-                                    <TableHead>Doctor ID</TableHead>
-                                </TableRow>
-                            </TableHeader>
-
-                            <TableBody>
-                                {appointments.map((appointment) => (
-                                    <TableRow key={appointment.id}>
-                                        <TableCell>{appointment.id}</TableCell>
-                                        <TableCell>{formatDate(appointment.appointment_date)}</TableCell>
-                                        <TableCell>{appointment.doctor_id}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    )}
+                <CardContent className="space-y-4">
+                    <InfoRow label="Email" value={patient.email} />
+                    <InfoRow label="Phone" value={patient.phone} />
+                    <InfoRow label="Date of Birth" value={formatDate(patient.date_of_birth)} />
+                    <InfoRow label="Address" value={patient.address} />
                 </CardContent>
             </Card>
 
+            {/* Appointments */}
+            <DataSection title="Appointments">
+                {appointments.length === 0 ? (
+                    <EmptyState message="No appointments found." />
+                ) : (
+                    <>
+                        <StyledTable
+                            headers={["ID", "Date", "Doctor ID"]}
+                            rows={(showAllAppointments ? appointments : appointments.slice(0, MAX_VISIBLE))
+                                .map((a) => [
+                                    a.id,
+                                    formatDate(a.appointment_date),
+                                    a.doctor_id,
+                                ])
+                            }
+                        />
+
+                        {appointments.length > MAX_VISIBLE && (
+                            <button
+                                className="text-blue-600 text-sm font-medium mt-2"
+                                onClick={() => setShowAllAppointments(prev => !prev)}
+                            >
+                                {showAllAppointments ? "View Less" : "View More"}
+                            </button>
+                        )}
+                    </>
+                )}
+            </DataSection>
+
+            {/* Prescriptions */}
+            <DataSection title="Prescriptions">
+                {prescriptions.length === 0 ? (
+                    <EmptyState message="No prescriptions found." />
+                ) : (
+                    <>
+                        <StyledTable
+                            headers={["ID", "Medication", "Doctor ID"]}
+                            rows={(showAllPrescriptions ? prescriptions : prescriptions.slice(0, MAX_VISIBLE))
+                                .map((p) => [
+                                    p.id,
+                                    p.medication || p.medication_name || p.name,
+                                    p.doctor_id,
+                                ])
+                            }
+                        />
+
+                        {prescriptions.length > MAX_VISIBLE && (
+                            <button
+                                className="text-blue-600 text-sm font-medium mt-2"
+                                onClick={() => setShowAllPrescriptions(prev => !prev)}
+                            >
+                                {showAllPrescriptions ? "View Less" : "View More"}
+                            </button>
+                        )}
+                    </>
+                )}
+            </DataSection>
+
+            {/* Diagnoses */}
+            <DataSection title="Diagnoses">
+                {diagnoses.length === 0 ? (
+                    <EmptyState message="No diagnoses found." />
+                ) : (
+                    <>
+                        <StyledTable
+                            headers={["ID", "Condition", "Date"]}
+                            rows={(showAllDiagnoses ? diagnoses : diagnoses.slice(0, MAX_VISIBLE))
+                                .map((d) => [
+                                    d.id,
+                                    d.condition,
+                                    formatDate(d.diagnosis_date),
+                                ])
+                            }
+                        />
+
+                        {diagnoses.length > MAX_VISIBLE && (
+                            <button
+                                className="text-blue-600 text-sm font-medium mt-2"
+                                onClick={() => setShowAllDiagnoses(prev => !prev)}
+                            >
+                                {showAllDiagnoses ? "View Less" : "View More"}
+                            </button>
+                        )}
+                    </>
+                )}
+            </DataSection>
+        </div>
+    );
+}
+
+/* --- Styled Helper Components --- */
+
+function InfoRow({ label, value }) {
+    return (
+        <p>
+            <strong>{label}:</strong> {value}
+        </p>
+    );
+}
+
+function DataSection({ title, children }) {
+    return (
+        <Card className="shadow-sm border">
+            <CardHeader>
+                <CardTitle className="text-xl font-semibold">{title}</CardTitle>
+            </CardHeader>
+            <CardContent>{children}</CardContent>
+        </Card>
+    );
+}
+
+function StyledTable({ headers, rows }) {
+    return (
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    {headers.map((h) => (
+                        <TableHead key={h}>{h}</TableHead>
+                    ))}
+                </TableRow>
+            </TableHeader>
+
+            <TableBody>
+                {rows.map((row, i) => (
+                    <TableRow key={i}>
+                        {row.map((cell, j) => (
+                            <TableCell key={j}>{cell}</TableCell>
+                        ))}
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    );
+}
+
+function EmptyState({ message }) {
+    return (
+        <div className="text-sm text-muted-foreground bg-gray-50 border rounded-md p-3">
+            {message}
         </div>
     );
 }

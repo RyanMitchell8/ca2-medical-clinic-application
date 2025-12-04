@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import axios from "@/config/api";
 import { useNavigate, useParams } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { formatForInput, formatForAPI } from "@/utils/formatDate";
 
 export default function Edit() {
     const [form, setForm] = useState({
@@ -30,11 +31,7 @@ export default function Edit() {
                 let response = await axios.request(options);
                 let appointment = response.data;
 
-                const date = new Date(
-                    Number(appointment.appointment_date)
-                )
-                    .toISOString()
-                    .split("T")[0];
+                const date = formatForInput(appointment.appointment_date);
 
                 setForm({
                     appointment_date: date,
@@ -66,7 +63,8 @@ export default function Edit() {
                 Authorization: `Bearer ${token}`,
             },
             data: {
-                appointment_date: form.appointment_date,
+                // convert back to ISO for the API
+                appointment_date: formatForAPI(form.appointment_date),
                 doctor_id: Number(form.doctor_id),
                 patient_id: Number(form.patient_id),
             },

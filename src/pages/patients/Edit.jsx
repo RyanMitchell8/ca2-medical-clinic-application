@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { formatForInput, formatForAPI } from "@/utils/formatDate";
 
 export default function Edit() {
     const { id } = useParams();
@@ -20,11 +21,7 @@ export default function Edit() {
         address: "",
     });
 
-    // Turn timestamp → yyyy-mm-dd
-    const toInputDate = (timestamp) => {
-        const d = new Date(Number(timestamp));
-        return d.toISOString().split("T")[0];
-    };
+    
 
     useEffect(() => {
         const fetchPatient = async () => {
@@ -43,7 +40,7 @@ export default function Edit() {
                     last_name: patient.last_name,
                     email: patient.email,
                     phone: patient.phone,
-                    date_of_birth: toInputDate(patient.date_of_birth),
+                    date_of_birth: formatForInput(patient.date_of_birth),
                     address: patient.address,
                 });
 
@@ -64,6 +61,9 @@ export default function Edit() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        const apiDate = formatForAPI(form.date_of_birth );
+        const payload = { ...form, date_of_birth: apiDate };
 
         const options = {
             method: "PATCH",
@@ -71,6 +71,7 @@ export default function Edit() {
             headers: { Authorization: `Bearer ${token}` },
             data: {
                 ...form,
+                ...payload,
             },
         };
 

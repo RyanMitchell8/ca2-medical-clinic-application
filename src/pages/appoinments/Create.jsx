@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import axios from "@/config/api";
 import { useNavigate } from 'react-router';
 import { useAuth } from "@/hooks/useAuth";
+import { formatForAPI } from '@/utils/formatDate';
 
 export default function Create() {
 
@@ -25,7 +26,7 @@ export default function Create() {
 
     const createAppointment = async () => {
 
-    const isoDate = new Date(form.appointment_date).toISOString();
+    const isoDate = formatForAPI(form.appointment_date);
 
         const options = {
             method: "POST",

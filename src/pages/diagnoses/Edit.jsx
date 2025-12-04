@@ -5,6 +5,7 @@ import axios from "@/config/api";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { formatForInput } from "@/utils/formatDate";
 
 export default function Edit() {
     const [form, setForm] = useState({
@@ -31,9 +32,7 @@ export default function Edit() {
                 let response = await axios.request(options);
                 let diagnosis = response.data;
 
-                const formattedDate = new Date(Number(diagnosis.diagnosis_date))
-                    .toISOString()
-                    .split("T")[0];
+                const formattedDate = formatForInput(diagnosis.diagnosis_date);
 
                 setForm({
                     patient_id: diagnosis.patient_id,

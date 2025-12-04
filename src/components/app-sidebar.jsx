@@ -1,16 +1,19 @@
-import * as React from "react"
-import {
-  IconUsers,
-  IconTheater,
-  IconDashboard,
-  IconMicrophone2,
-  IconInnerShadowTop,
-  IconMusic,
-} from "@tabler/icons-react";
+import { useEffect } from "react";
+import { useLocation } from "react-router";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { useLocation } from "react-router";
-import { useEffect } from "react";
+
+import {
+  IconUsers,
+  IconDashboard,
+  IconStethoscope,
+  IconCalendarClock,
+  IconPillFilled,
+  IconReportMedical,
+  IconInnerShadowTop,
+} from "@tabler/icons-react";
+
+import { useAuth } from "@/hooks/useAuth";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -22,93 +25,70 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/",
-      icon: IconDashboard,
-    },
-    {
-      title: "Doctors",
-      url: "/doctors",
-      icon: IconUsers,
-    },
-    {
-      title: "Patients",
-      url: "/patients",
-      icon: IconUsers,
-    },
-    {
-      title: "Appointments",
-      url: "/appointments",
-      icon: IconUsers,
-    },
-    {
-      title: "Diagnoses",
-      url: "/diagnoses",
-      icon: IconUsers,
-    },
-    {
-      title: "Prescriptions",
-      url: "/prescriptions",
-      icon: IconUsers,
-    },
-  ]
-}
+// Sidebar navigation items
+const navItems = [
+  { title: "Dashboard", url: "/", icon: IconDashboard },
+  { title: "Doctors", url: "/doctors", icon: IconStethoscope },
+  { title: "Patients", url: "/patients", icon: IconUsers },
+  { title: "Appointments", url: "/appointments", icon: IconCalendarClock },
+  { title: "Diagnoses", url: "/diagnoses", icon: IconReportMedical },
+  { title: "Prescriptions", url: "/prescriptions", icon: IconPillFilled },
+];
 
-export function AppSidebar({...props }) {
+export function AppSidebar(props) {
   const location = useLocation();
+  const { user } = useAuth(); // ← REAL USER DATA
 
-  console.log(location);
+  console.log("AUTH USER:", user);
 
-  let message = location.state?.message;
-  let type = location.state?.type;
+  const message = location.state?.message;
+  const type = location.state?.type;
 
+  // Show toast messages from navigation
   useEffect(() => {
-    if (message) {
-      if (type === 'error') {
-        toast.error(message);
-      }
-      else if (type === 'success') {
-        toast.success(message);
-      } else {
-        toast(message);
-      }
-    }
-  }, [message]);
+    if (!message) return;
+
+    if (type === "error") toast.error(message);
+    else if (type === "success") toast.success(message);
+    else toast(message);
+  }, [message, type]);
+
+  // Fallback user display
+  const sidebarUser = {
+    name: user?.first_name && user?.last_name
+      ? `${user.first_name} ${user.last_name}`
+      : user?.name || "Unknown User",
+
+    email: user?.email || "No email provided",
+    avatar: user?.avatar || "/avatars/default.png",
+  };
 
   return (
     <>
       <Toaster position="top-center" richColors />
+
       <Sidebar collapsible="offcanvas" {...props}>
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                className="data-[slot=sidebar-menu-button]:p-1.5!"
-              >
-                <a href="#">
+              <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:p-1.5!">
+                <a href="/" className="flex items-center gap-2">
                   <IconInnerShadowTop className="size-5!" />
-                  <span className="text-base font-semibold">Acme Inc.</span>
+                  <span className="text-base font-semibold">The Grand Medical Clinic</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
+
         <SidebarContent>
-          <NavMain items={data.navMain} />
+          <NavMain items={navItems} />
         </SidebarContent>
+
         <SidebarFooter>
-          <NavUser user={data.user}/>
+          <NavUser user={sidebarUser} />
         </SidebarFooter>
       </Sidebar>
     </>

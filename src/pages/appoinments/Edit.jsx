@@ -58,7 +58,7 @@ export default function Edit() {
 
         const options = {
             method: "PATCH",
-            url: `/appointment/${id}`,  
+            url: `/appointments/${id}`,  
             headers: {
                 Authorization: `Bearer ${token}`,
             },

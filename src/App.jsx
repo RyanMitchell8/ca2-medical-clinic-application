@@ -1,5 +1,4 @@
 import { AuthProvider } from './hooks/useAuth';
-
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -7,6 +6,7 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { SiteHeader } from '@/components/site-header';
 
 import Home from '@/pages/Home';
+import ProtectedRoute from '@/pages/ProtectedRoute';
 
 // Doctors Pages //
 import DoctorsIndex from '@/pages/doctors/Index';
@@ -59,38 +59,49 @@ export default function App() {
 
                   <Routes>
 
-                    {/* Home */}
+                    {/* Public Home */}
                     <Route path="/" element={<Home />} />
 
-                    {/* Doctors Routes */}
+                    {/* Public Read-Only Routes */}
                     <Route path="/doctors" element={<DoctorsIndex />} />
-                    <Route path="/doctors/create" element={<DoctorsCreate />} />
-                    <Route path="/doctors/:id/edit" element={<DoctorsEdit />} />
                     <Route path="/doctors/:id" element={<DoctorsShow />} />
 
-                    {/* Patients Routes */}
                     <Route path="/patients" element={<PatientsIndex />} />
-                    <Route path="/patients/create" element={<PatientsCreate />} />
-                    <Route path="/patients/:id/edit" element={<PatientsEdit />} />
                     <Route path="/patients/:id" element={<PatientsShow />} />
 
-                    {/* Appointments Routes */}
                     <Route path="/appointments" element={<AppointmentsIndex />} />
                     <Route path="/appointments/:id" element={<AppointmentsShow />} />
-                    <Route path="/appointments/create" element={<AppointmentsCreate />} />
-                    <Route path="/appointments/:id/edit" element={<AppointmentsEdit />} />
 
-                    {/* Diagnoses Routes */}
                     <Route path="/diagnoses" element={<DiagnosesIndex />} />
                     <Route path="/diagnoses/:id" element={<DiagnosesShow />} />
-                    <Route path="/diagnoses/create" element={<DiagnosesCreate />} />
-                    <Route path="/diagnoses/:id/edit" element={<DiagnosesEdit />} />
 
-                    {/* Prescriptions Routes */}
                     <Route path="/prescriptions" element={<PrescriptionsIndex />} />
                     <Route path="/prescriptions/:id" element={<PrescriptionsShow />} />
-                    <Route path="/prescriptions/create" element={<PrescriptionsCreate />} />
-                    <Route path="/prescriptions/:id/edit" element={<PrescriptionsEdit />} />
+
+                    {/* PROTECTED CRUD ROUTES */}
+                    <Route element={<ProtectedRoute />}>
+                      
+                      {/* Doctors */}
+                      <Route path="/doctors/create" element={<DoctorsCreate />} />
+                      <Route path="/doctors/:id/edit" element={<DoctorsEdit />} />
+
+                      {/* Patients */}
+                      <Route path="/patients/create" element={<PatientsCreate />} />
+                      <Route path="/patients/:id/edit" element={<PatientsEdit />} />
+
+                      {/* Appointments */}
+                      <Route path="/appointments/create" element={<AppointmentsCreate />} />
+                      <Route path="/appointments/:id/edit" element={<AppointmentsEdit />} />
+
+                      {/* Diagnoses */}
+                      <Route path="/diagnoses/create" element={<DiagnosesCreate />} />
+                      <Route path="/diagnoses/:id/edit" element={<DiagnosesEdit />} />
+
+                      {/* Prescriptions */}
+                      <Route path="/prescriptions/create" element={<PrescriptionsCreate />} />
+                      <Route path="/prescriptions/:id/edit" element={<PrescriptionsEdit />} />
+
+                    </Route>
 
                   </Routes>
 

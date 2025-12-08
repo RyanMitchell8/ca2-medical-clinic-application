@@ -3,7 +3,6 @@ import LoginForm from "@/components/LoginForm";
 import RegisterForm from "@/components/RegisterForm";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-// ...existing code...
 
 export default function Home() {
   const { token } = useAuth();
@@ -55,7 +54,6 @@ export default function Home() {
   }
 
   return (
-    // ...existing code...
     <div className="flex flex-col items-center justify-center w-full mt-14 px-4">
       <h1 className="text-3xl font-bold mb-6 tracking-tight">
         {showRegister ? "Create an Account" : "Welcome Back"}

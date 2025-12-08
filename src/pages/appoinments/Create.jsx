@@ -1,99 +1,240 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import axios from "@/config/api";
-import { useNavigate } from 'react-router';
+import { useNavigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
-import { formatForAPI } from '@/utils/formatDate';
+import { formatForAPI } from "@/utils/formatDate";
+
+import { useForm, Controller } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from "@/components/ui/select";
+
+import { Calendar } from "@/components/ui/calendar";
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+} from "@/components/ui/popover";
+import { ChevronDown } from "lucide-react";
+
+// Zod schema – validation rules
+const appointmentSchema = z.object({
+    appointment_date: z.date({
+        required_error: "Appointment date is required",
+    }),
+    doctor_id: z.string().min(1, "Doctor is required"),
+    patient_id: z.string().min(1, "Patient is required"),
+});
 
 export default function Create() {
-
-    const [form, setForm] = useState({
-        appointment_date: "",
-        doctor_id: "",
-        patient_id: ""
-    });
-
     const navigate = useNavigate();
     const { token } = useAuth();
 
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
-    };
+    const [doctors, setDoctors] = useState([]);
+    const [patients, setPatients] = useState([]);
+    const [dateOpen, setDateOpen] = useState(false);
 
-    const createAppointment = async () => {
+    // React Hook Form setup
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(appointmentSchema),
+        defaultValues: {
+            appointment_date: undefined,
+            doctor_id: "",
+            patient_id: "",
+        },
+    });
 
-    const isoDate = formatForAPI(form.appointment_date);
+    // Fetch doctors & patients for dropdowns
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [docRes, patRes] = await Promise.all([
+                    axios.get("/doctors"),
+                    axios.get("/patients"),
+                ]);
+
+                setDoctors(docRes.data);
+                setPatients(patRes.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const createAppointment = async (data) => {
+        const isoDate = formatForAPI(data.appointment_date);
 
         const options = {
             method: "POST",
             url: "/appointments",
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
             },
             data: {
                 appointment_date: isoDate,
-                doctor_id: Number(form.doctor_id),
-                patient_id: Number(form.patient_id)
-            }
+                doctor_id: Number(data.doctor_id),
+                patient_id: Number(data.patient_id),
+            },
         };
-
 
         try {
             let response = await axios.request(options);
             console.log(response.data);
 
-            navigate('/appointments', {
+            navigate("/appointments", {
                 state: {
-                    type: 'success',
-                    message: "Appointment created successfully"
-                }
+                    type: "success",
+                    message: "Appointment created successfully",
+                },
             });
-
         } catch (err) {
             console.log(err);
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        createAppointment();
+    const onSubmit = (formData) => {
+        console.log(formData);
+        createAppointment(formData);
     };
 
     return (
         <>
             <h1>Create a new Appointment</h1>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
+                {/* Appointment Date with calendar popup */}
+                <div>
+                    <label className="block mb-1 text-sm font-medium">
+                        Appointment Date
+                    </label>
 
-                <Input
-                    type="date"
-                    placeholder="Appointment Date"
-                    name="appointment_date"
-                    value={form.appointment_date}
-                    onChange={handleChange}
-                />
+                    <Controller
+                        name="appointment_date"
+                        control={control}
+                        render={({ field }) => (
+                            <>
+                                <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-full justify-between"
+                                        >
+                                            {field.value
+                                                ? field.value.toLocaleDateString()
+                                                : "Select date"}
+                                            <ChevronDown className="h-4 w-4" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="p-0 w-auto">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value}
+                                            onSelect={(selectedDate) => {
+                                                field.onChange(selectedDate);
+                                                setDateOpen(false);
+                                            }}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                {errors.appointment_date && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.appointment_date.message}
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    />
+                </div>
 
-                <Input
-                    className="mt-2"
-                    type="number"
-                    placeholder="Doctor ID"
-                    name="doctor_id"
-                    value={form.doctor_id}
-                    onChange={handleChange}
-                />
+                {/* Doctor dropdown */}
+                <div>
+                    <label className="block mb-1 text-sm font-medium">Doctor</label>
 
-                <Input
-                    className="mt-2"
-                    type="number"
-                    placeholder="Patient ID"
-                    name="patient_id"
-                    value={form.patient_id}
-                    onChange={handleChange}
-                />
+                    <Controller
+                        name="doctor_id"
+                        control={control}
+                        render={({ field }) => (
+                            <>
+                                <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a doctor" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {doctors.map((doctor) => (
+                                            <SelectItem
+                                                key={doctor.id}
+                                                value={doctor.id.toString()}
+                                            >
+                                                {doctor.first_name} {doctor.last_name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.doctor_id && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.doctor_id.message}
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    />
+                </div>
+
+                {/* Patient dropdown */}
+                <div>
+                    <label className="block mb-1 text-sm font-medium">Patient</label>
+
+                    <Controller
+                        name="patient_id"
+                        control={control}
+                        render={({ field }) => (
+                            <>
+                                <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a patient" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {patients.map((patient) => (
+                                            <SelectItem
+                                                key={patient.id}
+                                                value={patient.id.toString()}
+                                            >
+                                                {patient.first_name} {patient.last_name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.patient_id && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.patient_id.message}
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    />
+                </div>
 
                 <Button
                     className="mt-4 cursor-pointer"

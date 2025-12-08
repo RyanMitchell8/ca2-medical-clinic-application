@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "@/config/api";
+import { set } from "zod";
 
 const AuthContext = createContext();
 
@@ -9,31 +10,28 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(() => localStorage.getItem("token") || null);
-    const [user, setUser] = useState(() => {
-        const stored = localStorage.getItem("user");
-        return stored ? JSON.parse(stored) : null;
-    });
+    const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")) || null);
 
     // Load user info automatically when token exists
-    useEffect(() => {
-        if (!token || user) return;
+    // useEffect(() => {
+    //     if (!token || user) return;
 
-        const fetchUser = async () => {
-            try {
-                const { data } = await axios.get("/", {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+    //     const fetchUser = async () => {
+    //         try {
+    //             const { data } = await axios.get("/", {
+    //                 headers: { Authorization: `Bearer ${token}` }
+    //             });
 
-                setUser(data);
-                localStorage.setItem("user", JSON.stringify(data));
-            } catch (err) {
-                console.error("Failed to load user:", err);
-                setUser(null);
-            }
-        };
+    //             setUser(data);
+    //             localStorage.setItem("user", JSON.stringify(data));
+    //         } catch (err) {
+    //             console.error("Failed to load user:", err);
+    //             setUser(null);
+    //         }
+    //     };
 
-        fetchUser();
-    }, [token]);
+    //     fetchUser();
+    // }, [token]);
 
     const onLogin = async (email, password) => {
         try {
@@ -41,13 +39,14 @@ export const AuthProvider = ({ children }) => {
 
             // Store token
             localStorage.setItem("token", data.token);
+
             axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-            setToken(data.token);
 
             // Store user if returned
-            if (data.user) {
-                setUser(data.user);
-                localStorage.setItem("user", JSON.stringify(data.user));
+            if (data) {
+                setToken(data.token);
+                setUser(data);
+                localStorage.setItem("user", JSON.stringify(data));
             }
 
             return data;
@@ -67,9 +66,9 @@ export const AuthProvider = ({ children }) => {
                 setToken(data.token);
             }
 
-            if (data.user) {
-                setUser(data.user);
-                localStorage.setItem("user", JSON.stringify(data.user));
+            if (data) {
+                setUser(data);
+                localStorage.setItem("user", JSON.stringify(data));
             }
 
             return data;

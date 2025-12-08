@@ -1,10 +1,15 @@
-import { useState } from "react";
-import axios from "@/config/api";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+
+import { useForm, Controller } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -15,22 +20,35 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginForm() {
-  const [form, setForm] = useState({});
   const { onLogin } = useAuth();
 
-  const handleForm = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const formSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters.")
+      .max(100, "Password must be at most 100 characters."),
+  });
 
-  const submitForm = (e) => {
-    e.preventDefault();
-    console.log(form);
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onChange",
+  });
 
-    onLogin(form.email, form.password);
+  const submitForm = async (data) => {
+    console.log(data);
+    const response = await onLogin(data.email, data.password);
+    if (response && response.msg) toast.error(response.msg);
+    console.log(response);
   };
 
   return (
     <Card className="w-full max-w-md">
+      <Toaster />
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
@@ -38,36 +56,66 @@ export default function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={submitForm}>
+        <form id="login-form" onSubmit={form.handleSubmit(submitForm)}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
+              <Controller
                 name="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                onChange={handleForm}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <div>
+                    <Label htmlFor="form-email">Email</Label>
+                    <Input
+                      id="form-email"
+                      {...field}
+                      placeholder="test@example.com"
+                      autoComplete="email"
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.invalid && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {fieldState.error?.message}
+                      </p>
+                    )}
+                  </div>
+                )}
               />
             </div>
+
             <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-              </div>
-              <Input
-                id="password"
+              <Controller
                 name="password"
-                type="password"
-                required
-                onChange={handleForm}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <div>
+                    <Label htmlFor="form-password">Password</Label>
+                    <Input
+                      id="form-password"
+                      type="password"
+                      {...field}
+                      autoComplete="current-password"
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.invalid && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {fieldState.error?.message}
+                      </p>
+                    )}
+                  </div>
+                )}
               />
             </div>
           </div>
         </form>
       </CardContent>
+
       <CardFooter className="flex-col gap-2">
-        <Button variant='outline' onClick={submitForm} type="submit" className="w-full">
+        <Button
+          variant="outline"
+          form="login-form"
+          type="submit"
+          className="w-full"
+        >
           Login
         </Button>
       </CardFooter>

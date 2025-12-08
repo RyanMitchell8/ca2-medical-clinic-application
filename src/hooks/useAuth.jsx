@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
         const fetchUser = async () => {
             try {
-                const { data } = await axios.get("/me", {
+                const { data } = await axios.get("/", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

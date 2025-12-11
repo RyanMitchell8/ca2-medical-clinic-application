@@ -20,30 +20,45 @@ import {
 
 export default function Index() {
     const [appointments, setAppointments] = useState([]);
+    const [patients, setPatients] = useState([]);
+    const [doctors, setDoctors] = useState([]);
     const navigate = useNavigate();
     const { token } = useAuth();
 
     useEffect(() => {
-        const fetchAppointments = async () => {
-            const options = {
-                method: "GET",
-                url: "/appointments",
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-
+        const fetchAll = async () => {
             try {
-                let response = await axios.request(options);
-                console.log(response.data);
-                setAppointments(response.data);
+                const [apptsRes, doctorsRes, patientsRes] = await Promise.all([
+                    axios.get("/appointments", { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get("/doctors", { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get("/patients", { headers: { Authorization: `Bearer ${token}` } }),
+                ]);
+
+                setAppointments(Array.isArray(apptsRes.data) ? apptsRes.data : []);
+                setDoctors(Array.isArray(doctorsRes.data) ? doctorsRes.data : []);
+                setPatients(Array.isArray(patientsRes.data) ? patientsRes.data : []);
             } catch (err) {
                 console.log(err);
+                setAppointments([]);
+                setDoctors([]);
+                setPatients([]);
             }
         };
 
-        fetchAppointments();
+        if (token) fetchAll();
     }, [token]);
+
+    // function to get patient name by id
+    const getPatientNameById = (id) => {
+        const patient = patients.find((p) => Number(p.id) === Number(id));
+        return patient ? `${patient.first_name} ${patient.last_name}` : "Unknown";
+    };
+
+    // function to get doctor name by id
+    const getDoctorNameById = (id) => {
+        const doctor = doctors.find((d) => Number(d.id) === Number(id));
+        return doctor ? `${doctor.first_name} ${doctor.last_name}` : "Unknown";
+    };
 
     const onDeleteCallback = (id) => {
         toast.success("Appointment deleted successfully");
@@ -71,8 +86,8 @@ export default function Index() {
                 <TableHeader>
                     <TableRow>
                         <TableHead>Appointment Date</TableHead>
-                        <TableHead>Doctor ID</TableHead>
-                        <TableHead>Patient ID</TableHead>
+                        <TableHead>Doctor Name</TableHead>
+                        <TableHead>Patient Name</TableHead>
                         <TableHead></TableHead>
                     </TableRow>
                 </TableHeader>
@@ -85,8 +100,8 @@ export default function Index() {
                                 {formatDate(appointment.appointment_date)}
                             </TableCell>
 
-                            <TableCell>{appointment.doctor_id}</TableCell>
-                            <TableCell>{appointment.patient_id}</TableCell>
+                            <TableCell>{getDoctorNameById(appointment.doctor_id)}</TableCell>
+                            <TableCell>{getPatientNameById(appointment.patient_id)}</TableCell>
 
                             <TableCell>
                                 <div className="flex gap-2">

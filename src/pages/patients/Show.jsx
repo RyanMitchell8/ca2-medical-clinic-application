@@ -29,6 +29,7 @@ export default function Show() {
     const [patient, setPatient] = useState(null);
     const [appointments, setAppointments] = useState([]);
     const [prescriptions, setPrescriptions] = useState([]);
+    const [doctors, setDoctors] = useState([]);
     const [diagnoses, setDiagnoses] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -46,7 +47,7 @@ export default function Show() {
             setLoading(true);
 
             try {
-                const [patientRes, apptRes, presRes, diagRes] = await Promise.all([
+                const [patientRes, apptRes, presRes, diagRes, doctorRes] = await Promise.all([
                     axios.get(`/patients/${id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
@@ -61,11 +62,15 @@ export default function Show() {
                         params: { patient_id: id },
                         headers: { Authorization: `Bearer ${token}` },
                     }),
+                    axios.get(`/doctors`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
                 ]);
 
                 setPatient(patientRes.data);
                 setAppointments(apptRes.data || []);
                 setPrescriptions(presRes.data || []);
+                setDoctors(doctorRes.data || []);
                 setDiagnoses(diagRes.data || []);
             } catch (err) {
                 console.error(err);
@@ -76,6 +81,12 @@ export default function Show() {
 
         fetchAll();
     }, [id, token]);
+
+    // Function to get doctor name by id
+    const getDoctorNameById = (id) => {
+        const doc = doctors.find((d) => d.id === id);
+        return doc ? `${doc.first_name} ${doc.last_name}` : "Unknown";
+    };
 
     if (loading || !patient) return <p>Loading patient...</p>;
 
@@ -122,12 +133,12 @@ export default function Show() {
                 ) : (
                     <>
                         <StyledTable
-                            headers={["ID", "Date", "Doctor ID"]}
+                            headers={["ID", "Date", "Doctor Name"]}
                             rows={(showAllAppointments ? appointments : appointments.slice(0, MAX_VISIBLE))
                                 .map((a) => [
                                     a.id,
                                     formatDate(a.appointment_date),
-                                    a.doctor_id,
+                                    getDoctorNameById(a.doctor_id),
                                 ])
                             }
                         />
@@ -151,12 +162,12 @@ export default function Show() {
                 ) : (
                     <>
                         <StyledTable
-                            headers={["ID", "Medication", "Doctor ID"]}
+                            headers={["ID", "Medication", "Doctor Name"]}
                             rows={(showAllPrescriptions ? prescriptions : prescriptions.slice(0, MAX_VISIBLE))
                                 .map((p) => [
                                     p.id,
                                     p.medication || p.medication_name || p.name,
-                                    p.doctor_id,
+                                    getDoctorNameById(p.doctor_id),
                                 ])
                             }
                         />

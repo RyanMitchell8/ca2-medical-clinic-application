@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import axios from "@/config/api";
@@ -6,34 +6,97 @@ import { useNavigate } from 'react-router';
 import { useAuth } from "@/hooks/useAuth";
 import { formatForAPI } from '@/utils/formatDate';
 
+import { useForm, Controller } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from "@/components/ui/select";
+
+import { Calendar } from "@/components/ui/calendar";
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+} from "@/components/ui/popover";
+import { ChevronDown } from "lucide-react";
+
+
+const prescriptionsSchema = z.object({
+    patient_id: z.string().min(1, "Patient ID is required"),
+    doctor_id: z.string().min(1, "Doctor ID is required"),
+    diagnosis_id: z.string().min(1, "Diagnosis ID is required"),
+    medication: z.string().min(1, "Medication is required"),
+    dosage: z.string().min(1, "Dosage is required"),
+    start_date: z.date({
+        required_error: "Start date is required",
+    }),
+    end_date: z.date({
+        required_error: "End date is required",
+    }),
+});
 
 
 export default function Create() {
-    const [form, setForm] = useState({
-        patient_id: "",
-        doctor_id: "",
-        diagnosis_id: "",
-        medication: "",
-        dosage: "",
-        start_date: "",
-        end_date: ""
-    });
-
     const navigate = useNavigate();
     const { token } = useAuth();
+    const [doctors, setDoctors] = useState([]);
+    const [patients, setPatients] = useState([]);
+    const [diagnoses, setDiagnoses] = useState([]);
 
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
-    };
+    // React Hook Form setup
+    const {
+        control,
+        handleSubmit,
+        register,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(prescriptionsSchema),
+        mode: 'onChange',
+        defaultValues: {
+            patient_id: "",
+            doctor_id: "",
+            diagnosis_id: "",
+            medication: "",
+            dosage: "",
+            start_date: undefined,
+            end_date: undefined
+        },
+    });
 
-    const createPrescription = async () => {
-        
-        const isoDate = formatForAPI(form.start_date);
-        const isoEndDate = formatForAPI(form.end_date);
+    useEffect(() => {
+        if (!token) return;
 
+        const fetchData = async () => {
+            try {
+                const [docRes, patRes, diagnosisRes] = await Promise.all([
+                    axios.get("/doctors", { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get("/patients", { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get("/diagnoses", { headers: { Authorization: `Bearer ${token}` } }),
+                ]);
+
+                setDoctors(docRes.data);
+                setPatients(patRes.data);
+                setDiagnoses(diagnosisRes.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        fetchData();
+    }, [token]);
+
+    const [startDateOpen, setStartDateOpen] = useState(false);
+    const [endDateOpen, setEndDateOpen] = useState(false);
+
+    const createPrescription = async (data) => {
+        const isoDate = formatForAPI(data.start_date);
+        const isoEndDate = formatForAPI(data.end_date);
 
         const options = {
             method: "POST",
@@ -42,108 +105,251 @@ export default function Create() {
                 Authorization: `Bearer ${token}`
             },
             data: {
-                ...form,
+                ...data,
                 start_date: isoDate,
                 end_date: isoEndDate,
-                doctor_id: Number(form.doctor_id),
-                patient_id: Number(form.patient_id),
-                diagnosis_id: Number(form.diagnosis_id)
+                doctor_id: Number(data.doctor_id),
+                patient_id: Number(data.patient_id),
+                diagnosis_id: Number(data.diagnosis_id)
             }
         };
 
         try {
             let response = await axios.request(options);
             console.log(response.data);
-            navigate('/prescriptions', { state: { 
-                type: 'success',
-                message: `Prescription "${response.data.id}" created successfully` 
-            }});
+            navigate('/prescriptions', {
+                state: {
+                    type: 'success',
+                    message: `Prescription "${response.data.id}" created successfully`
+                }
+            });
         } catch (err) {
             console.log(err);
         }
 
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(form);
-        createPrescription();
+    const onSubmit = (formData) => {
+        console.log(formData);
+        createPrescription(formData);
     };
 
     return (
         <>
-            <h1>Create a new Prescription</h1>
-            <form onSubmit={handleSubmit}>
+            <h1 className="text-2xl font-bold mb-4">Create Prescription</h1>
 
-                <Input
-                    type="number"
-                    placeholder="Patient ID"
-                    name="patient_id"
-                    value={form.patient_id}
-                    onChange={handleChange}
-                />
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
+                <div>
+                    <label className="block mb-1 text-sm font-medium">Patient</label>
 
-                <Input
-                    className="mt-2"
-                    type="number"
-                    placeholder="Doctor ID"
-                    name="doctor_id"
-                    value={form.doctor_id}
-                    onChange={handleChange}
-                />
+                    <Controller
+                        name="patient_id"
+                        control={control}
+                        render={({ field }) => (
+                            <>
+                                <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a patient" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {patients.map((patient) => (
+                                            <SelectItem
+                                                key={patient.id}
+                                                value={patient.id.toString()}
+                                            >
+                                                {patient.first_name} {patient.last_name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.patient_id && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.patient_id.message}
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    />
+                </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium">Doctor</label>
 
-                <Input
-                    className="mt-2"
-                    type="number"
-                    placeholder="Diagnosis ID"
-                    name="diagnosis_id"
-                    value={form.diagnosis_id}
-                    onChange={handleChange}
-                />
+                    <Controller
+                        name="doctor_id"
+                        control={control}
+                        render={({ field }) => (
+                            <>
+                                <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a doctor" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {doctors.map((doctor) => (
+                                            <SelectItem
+                                                key={doctor.id}
+                                                value={doctor.id.toString()}
+                                            >
+                                                {doctor.first_name} {doctor.last_name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.doctor_id && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.doctor_id.message}
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    />
+                </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium">Diagnosis</label>
+                    <Controller
+                        name="diagnosis_id"
+                        control={control}
+                        render={({ field }) => (
+                            <>
+                                <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a diagnosis" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {diagnoses.map((diagnosis) => (
+                                            <SelectItem
+                                                key={diagnosis.id}
+                                                value={diagnosis.id.toString()}
+                                            >
+                                                {diagnosis.condition}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.diagnosis_id && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.diagnosis_id.message}
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    />
+                </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium">Medication</label>
+                    <Input
+                        type="text"
+                        placeholder="Medication"
+                        {...register("medication")}
+                    />
+                    {errors.medication && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.medication.message}
+                        </p>
+                    )}
 
-                <Input
-                    className="mt-2"
-                    type="text"
-                    placeholder="Medication"
-                    name="medication"
-                    value={form.medication}
-                    onChange={handleChange}
-                />
+                </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium">Dosage</label>
+                    <Input
+                        type="text"
+                        placeholder="Dosage"
+                        {...register("dosage")}
+                    />
+                    {errors.dosage && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.dosage.message}
+                        </p>
+                    )}
 
-                <Input
-                    className="mt-2"
-                    type="text"
-                    placeholder="Dosage"
-                    name="dosage"
-                    value={form.dosage}
-                    onChange={handleChange}
-                />
-
-                <Input
-                    className="mt-2"
-                    type="date" 
-                    placeholder="Start Date"
-                    name="start_date"
-                    value={form.start_date}
-                    onChange={handleChange}
-                />
-
-                <Input
-                    className="mt-2"
-                    type="date" 
-                    placeholder="End Date"
-                    name="end_date"
-                    value={form.end_date}
-                    onChange={handleChange}
-                />
-
-                <Button
-                    className="mt-4 cursor-pointer"
-                    variant="outline"
-                    type="submit"
-                >
-                    Submit
-                </Button>
+                </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium">Start Date</label>
+                    <Controller
+                        name="start_date"
+                        control={control}
+                        render={({ field }) => (
+                            <>
+                                <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-between"
+                                        >
+                                            {field.value
+                                                ? field.value.toLocaleDateString()
+                                                : "Select start date"}
+                                            <ChevronDown className="h-4 w-4" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="p-0 w-auto">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value}
+                                            onSelect={(selectedDate) => {
+                                                field.onChange(selectedDate);
+                                                setStartDateOpen(false);
+                                            }}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                {errors.start_date && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.start_date.message}
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    />
+                </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium">End Date</label>
+                    <Controller
+                        name="end_date"
+                        control={control}
+                        render={({ field }) => (
+                            <>
+                                <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-between"
+                                        >
+                                            {field.value
+                                                ? field.value.toLocaleDateString()
+                                                : "Select start date"}
+                                            <ChevronDown className="h-4 w-4" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="p-0 w-auto">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value}
+                                            onSelect={(selectedDate) => {
+                                                field.onChange(selectedDate);
+                                                setEndDateOpen(false);
+                                            }}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                {errors.end_date && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.end_date.message}
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    />
+                </div>
+                <Button type="submit">Create Prescription</Button>
             </form>
         </>
     );

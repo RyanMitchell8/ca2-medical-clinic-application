@@ -114,6 +114,6 @@ Live site: https://thegrandmedicalclinic.netlify.app
 
 ## Credits & License
 
-© 2024 Ryan Mitchell
+© 2025 Ryan Mitchell
 
 This project was created for educational purposes as part of a third-year continuous assessment.

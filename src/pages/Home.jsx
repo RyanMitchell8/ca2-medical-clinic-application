@@ -1,103 +1,142 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import LoginForm from "@/components/LoginForm";
 import RegisterForm from "@/components/RegisterForm";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
+
+import {
+  Stethoscope,
+  CalendarDays,
+  Users,
+  ClipboardList,
+  Pill,
+} from "lucide-react";
 
 export default function Home() {
   const { token } = useAuth();
   const [showRegister, setShowRegister] = useState(false);
 
-  // If logged in
   if (token) {
     return (
-      <div className="flex flex-col items-center pt-20">
-        <h1 className="text-3xl font-bold mb-4">You are logged in 🎉</h1>
-        <p className="text-muted-foreground">Use the sidebar to navigate.</p>
+      <div className="container mx-auto pt-20 px-4">
+        {/* Header */}
+        <div className="mb-10 text-center">
+          <h1 className="text-4xl font-bold tracking-tight mb-2">
+            Dashboard
+          </h1>
+          <p className="text-muted-foreground">
+            Choose a section to manage your clinic
+          </p>
+        </div>
 
-        {/* Link Cards */}
-        <div className="w-full max-w-4xl mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <a
-            href="/doctors"
-            className="block p-6 bg-white rounded-xl border hover:shadow-lg transition-shadow duration-150"
-          >
-            <h2 className="text-lg font-semibold mb-1">🩺 Doctors</h2>
-            <p className="text-sm text-muted-foreground">View and manage doctors.</p>
-          </a>
+        {/* Dashboard cards */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <DashboardCard
+            to="/doctors"
+            title="Doctors"
+            description="View and manage doctors"
+            icon={<Stethoscope className="h-6 w-6" />}
+          />
 
-          <a
-            href="/appointments"
-            className="block p-6 bg-white rounded-xl border hover:shadow-lg transition-shadow duration-150"
-          >
-            <h2 className="text-lg font-semibold mb-1">📅 Appointments</h2>
-            <p className="text-sm text-muted-foreground">See upcoming and past bookings.</p>
-          </a>
+          <DashboardCard
+            to="/appointments"
+            title="Appointments"
+            description="Schedule and view appointments"
+            icon={<CalendarDays className="h-6 w-6" />}
+          />
 
-          <a
-            href="/patients"
-            className="block p-6 bg-white rounded-xl border hover:shadow-lg transition-shadow duration-150"
-          >
-            <h2 className="text-lg font-semibold mb-1">👥 Patients</h2>
-            <p className="text-sm text-muted-foreground">Patient list and details.</p>
-          </a>
+          <DashboardCard
+            to="/patients"
+            title="Patients"
+            description="View patient records"
+            icon={<Users className="h-6 w-6" />}
+          />
 
-          <a
-            href="/prescriptions"
-            className="block p-6 bg-white rounded-xl border hover:shadow-lg transition-shadow duration-150"
-          >
-            <h2 className="text-lg font-semibold mb-1">💊 Prescriptions</h2>
-            <p className="text-sm text-muted-foreground">Create and review prescriptions.</p>
-          </a>
+          <DashboardCard
+            to="/diagnoses"
+            title="Diagnoses"
+            description="Manage diagnoses"
+            icon={<ClipboardList className="h-6 w-6" />}
+          />
+
+          <DashboardCard
+            to="/prescriptions"
+            title="Prescriptions"
+            description="Create and review prescriptions"
+            icon={<Pill className="h-6 w-6" />}
+          />
         </div>
       </div>
     );
   }
 
+ 
   return (
-    <div className="flex flex-col items-center justify-center w-full mt-14 px-4">
-      <h1 className="text-3xl font-bold mb-6 tracking-tight">
-        {showRegister ? "Create an Account" : "Welcome Back"}
-      </h1>
+    <div className="flex min-h-[80vh] items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <h1 className="text-3xl font-bold mb-6 text-center tracking-tight">
+          {showRegister ? "Create an Account" : "Welcome Back"}
+        </h1>
 
-      <div className="w-full max-w-md p-6 rounded-xl shadow-lg bg-white border animate-fadeIn">
-
-        {/* Swap Forms */}
-        <div className="animate-fadeIn">
+        <Card className="p-6">
           {showRegister ? <RegisterForm /> : <LoginForm />}
-        </div>
 
-        {/* Toggle */}
-        <div className="text-center mt-6">
-          {!showRegister ? (
-            <>
-              <p className="text-sm text-muted-foreground mb-2">
-                Don't have an account?
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => setShowRegister(true)}
-                className="w-full"
-              >
-                Register Here
-              </Button>
-            </>
-          ) : (
-            <>
-              <p className="text-sm text-muted-foreground mb-2">
-                Already have an account?
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => setShowRegister(false)}
-                className="w-full"
-              >
-                Login Instead
-              </Button>
-            </>
-          )}
-        </div>
-
+          <div className="text-center mt-6">
+            {!showRegister ? (
+              <>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Don’t have an account?
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowRegister(true)}
+                  className="w-full"
+                >
+                  Register
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Already have an account?
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowRegister(false)}
+                  className="w-full"
+                >
+                  Login
+                </Button>
+              </>
+            )}
+          </div>
+        </Card>
       </div>
     </div>
+  );
+}
+
+function DashboardCard({ to, title, description, icon }) {
+  return (
+    <Link to={to}>
+      <Card className="h-full transition-all hover:shadow-lg hover:-translate-y-1">
+        <CardHeader className="flex flex-row items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
+            {icon}
+          </div>
+          <div>
+            <CardTitle>{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </div>
+        </CardHeader>
+      </Card>
+    </Link>
   );
 }

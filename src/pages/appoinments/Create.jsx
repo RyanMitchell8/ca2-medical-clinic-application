@@ -18,6 +18,14 @@ import {
     SelectItem,
 } from "@/components/ui/select";
 
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+
 import { Calendar } from "@/components/ui/calendar";
 import {
     Popover,
@@ -239,15 +247,6 @@ export default function Create() {
                     />
                 </div>
 
-                <Button
-                    className="mt-4 cursor-pointer"
-                    variant="outline"
-                    type="submit"
-                >
-                    Submit
-                </Button>
-            </form>
-        </>
                 </form>
             </CardContent>
 

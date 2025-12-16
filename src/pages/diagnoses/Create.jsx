@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import axios from "@/config/api";
 import { useNavigate } from 'react-router';
 import { useAuth } from "@/hooks/useAuth";
@@ -101,10 +102,13 @@ export default function Create() {
     };
 
     return (
-        <>
-            <h1 className="text-xl font-bold mb-4">Create Diagnosis</h1>
+        <Card className="w-full max-w-md mt-4">
+            <CardHeader>
+                <CardTitle>Create Diagnosis</CardTitle>
+            </CardHeader>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 max-w-md">
+            <CardContent>
+                <form id="create-diagnosis-form" onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 
                 {/* patient select */}
                 <div>
@@ -181,14 +185,12 @@ export default function Create() {
                     />
                 </div>
 
-                <Button
-                    type="submit"
-                    variant="outline"
-                    className="mt-4 cursor-pointer"
-                >
-                    Create Diagnosis
-                </Button>
-            </form>
-        </>
+                </form>
+            </CardContent>
+
+            <CardFooter>
+                <Button type="submit" variant="outline" form="create-diagnosis-form">Create Diagnosis</Button>
+            </CardFooter>
+        </Card>
     );
 }

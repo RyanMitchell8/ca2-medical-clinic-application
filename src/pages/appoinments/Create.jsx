@@ -113,10 +113,13 @@ export default function Create() {
     };
 
     return (
-        <>
-            <h1>Create a new Appointment</h1>
+        <Card className="w-full max-w-md mt-4">
+            <CardHeader>
+                <CardTitle>Create a new Appointment</CardTitle>
+            </CardHeader>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
+            <CardContent>
+                <form id="create-appointment-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 {/* Appointment Date with calendar popup */}
                 <div>
                     <label className="block mb-1 text-sm font-medium">
@@ -245,5 +248,12 @@ export default function Create() {
                 </Button>
             </form>
         </>
+                </form>
+            </CardContent>
+
+            <CardFooter>
+                <Button className="cursor-pointer" variant="outline" type="submit" form="create-appointment-form">Submit</Button>
+            </CardFooter>
+        </Card>
     );
 }

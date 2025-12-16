@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { formatForAPI } from "@/utils/formatDate";
 import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -99,10 +100,13 @@ export default function Edit() {
     };
 
     return (
-        <>
-            <h1>Update Patient</h1>
+        <Card className="w-full max-w-md mt-4">
+            <CardHeader>
+                <CardTitle>Update Patient</CardTitle>
+            </CardHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+            <CardContent>
+                <form id="edit-patient-form" onSubmit={handleSubmit} className="space-y-4">
                 {/* First Name */}
                 <div>
                     <label className="block mb-1 text-sm font-medium">First Name</label>
@@ -172,8 +176,12 @@ export default function Edit() {
                     />
                 </div>
 
-                <Button className="mt-4 cursor-pointer" variant="outline" type="submit">Submit</Button>
-            </form>
-        </>
+                </form>
+            </CardContent>
+
+            <CardFooter>
+                <Button className="cursor-pointer" variant="outline" type="submit" form="edit-patient-form">Submit</Button>
+            </CardFooter>
+        </Card>
     );
 }

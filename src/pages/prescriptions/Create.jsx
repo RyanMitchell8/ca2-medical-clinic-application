@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import axios from "@/config/api";
 import { useNavigate } from 'react-router';
 import { useAuth } from "@/hooks/useAuth";
@@ -135,10 +136,13 @@ export default function Create() {
     };
 
     return (
-        <>
-            <h1 className="text-2xl font-bold mb-4">Create Prescription</h1>
+        <Card className="w-full max-w-md mt-4">
+            <CardHeader>
+                <CardTitle>Create Prescription</CardTitle>
+            </CardHeader>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
+            <CardContent>
+                <form id="create-prescription-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block mb-1 text-sm font-medium">Patient</label>
 
@@ -349,8 +353,12 @@ export default function Create() {
                         )}
                     />
                 </div>
-                <Button type="submit">Create Prescription</Button>
-            </form>
-        </>
+                </form>
+            </CardContent>
+
+            <CardFooter>
+                <Button type="submit" form="create-prescription-form">Create Prescription</Button>
+            </CardFooter>
+        </Card>
     );
 }

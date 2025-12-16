@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import axios from "@/config/api";
 import { useNavigate, useParams } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
@@ -122,10 +123,13 @@ export default function Edit() {
     };
 
     return (
-        <>
-            <h1 className="text-xl font-bold mb-4">Update Doctor</h1>
+        <Card className="w-full max-w-md mt-4">
+            <CardHeader>
+                <CardTitle>Update Doctor</CardTitle>
+            </CardHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-3 max-w-md">
+            <CardContent>
+                <form id="edit-doctor-form" onSubmit={handleSubmit} className="space-y-3">
                 {/* First Name */}
                 <Input
                     type="text"
@@ -202,10 +206,14 @@ export default function Edit() {
                     )}
                 </div>
 
-                <Button variant="outline" className="mt-4 cursor-pointer" type="submit">
+                </form>
+            </CardContent>
+
+            <CardFooter>
+                <Button variant="outline" className="cursor-pointer" type="submit" form="edit-doctor-form">
                     Submit
                 </Button>
-            </form>
-        </>
+            </CardFooter>
+        </Card>
     );
 }

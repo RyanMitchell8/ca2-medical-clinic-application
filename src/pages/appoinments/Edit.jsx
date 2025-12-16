@@ -20,6 +20,7 @@ import {
     PopoverContent,
 } from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 
 export default function Edit() {
     const [form, setForm] = useState({
@@ -112,10 +113,13 @@ export default function Edit() {
     };
 
     return (
-        <>
-            <h1>Update Appointment</h1>
+        <Card className="w-full max-w-md mt-4">
+            <CardHeader>
+                <CardTitle>Update Appointment</CardTitle>
+            </CardHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+            <CardContent>
+                <form id="edit-appointment-form" onSubmit={handleSubmit} className="space-y-4">
                 {/* Calendar */}
                 <div>
                     <label className="block mb-1 text-sm font-medium">Appointment Date</label>
@@ -169,8 +173,12 @@ export default function Edit() {
                     </Select>
                 </div>
 
-                <Button className="mt-4 cursor-pointer" variant="outline" type="submit">Submit</Button>
-            </form>
-        </>
+                </form>
+            </CardContent>
+
+            <CardFooter>
+                <Button className="cursor-pointer" variant="outline" type="submit" form="edit-appointment-form">Submit</Button>
+            </CardFooter>
+        </Card>
     );
 }

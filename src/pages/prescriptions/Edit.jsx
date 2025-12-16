@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import axios from "@/config/api";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
@@ -151,11 +152,13 @@ export default function Edit() {
     };
 
     return (
-        <>
-            <h1>Update Appointment</h1>
+        <Card className="w-full max-w-md mt-4">
+            <CardHeader>
+                <CardTitle>Update Prescription</CardTitle>
+            </CardHeader>
 
-
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+            <CardContent>
+                <form id="edit-prescription-form" onSubmit={handleSubmit} className="space-y-4">
                 <Select
                     value={String(form.patient_id)}
                     onValueChange={(value) => setForm({ ...form, patient_id: value })}
@@ -263,8 +266,12 @@ export default function Edit() {
                     </Popover>
                 </div>
 
-                <Button className="mt-4 cursor-pointer" variant="outline" type="submit">Submit</Button>
-            </form>
-        </>
+                </form>
+            </CardContent>
+
+            <CardFooter>
+                <Button className="cursor-pointer" variant="outline" type="submit" form="edit-prescription-form">Submit</Button>
+            </CardFooter>
+        </Card>
     );
 }

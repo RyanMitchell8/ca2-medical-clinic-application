@@ -10,6 +10,7 @@ import { formatForAPI } from "@/utils/formatDate";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -132,10 +133,13 @@ export default function Edit() {
 
 
   return (
-    <>
-      <h1 className="text-xl font-bold mb-4">Update Diagnosis</h1>
+    <Card className="w-full max-w-md mt-4">
+      <CardHeader>
+        <CardTitle>Update Diagnosis</CardTitle>
+      </CardHeader>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
+      <CardContent>
+        <form id="edit-diagnosis-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Patient Select */}
         <div>
           <label className="block mb-1 text-sm font-medium">Patient</label>
@@ -227,10 +231,14 @@ export default function Edit() {
         </div>
 
         {/* Submit */}
-        <Button variant="outline" type="submit" disabled={isSubmitting}>
+        </form>
+      </CardContent>
+
+      <CardFooter>
+        <Button variant="outline" type="submit" form="edit-diagnosis-form" disabled={isSubmitting}>
           Submit
         </Button>
-      </form>
-    </>
+      </CardFooter>
+    </Card>
   );
 }

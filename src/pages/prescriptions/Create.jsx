@@ -25,7 +25,7 @@ import {
     PopoverTrigger,
     PopoverContent,
 } from "@/components/ui/popover";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ArrowLeft } from "lucide-react";
 
 
 const prescriptionsSchema = z.object({
@@ -138,8 +138,13 @@ export default function Create() {
     return (
         <Card className="w-full max-w-md mt-4">
             <CardHeader>
-                <CardTitle>Create Prescription</CardTitle>
-            </CardHeader>
+                        <div className="flex items-center gap-3">
+                            <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+                                <ArrowLeft className="h-4 w-4" />
+                            </Button>
+                            <CardTitle>Create Prescription</CardTitle>
+                        </div>
+                    </CardHeader>
 
             <CardContent>
                 <form id="create-prescription-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">

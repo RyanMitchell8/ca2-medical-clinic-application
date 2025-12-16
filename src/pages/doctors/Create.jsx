@@ -24,6 +24,7 @@ import {
   FieldDescription,
   FieldError,
 } from "@/components/ui/field";
+import { ArrowLeft } from "lucide-react";
 
 import {
   Card,
@@ -107,8 +108,13 @@ export default function Create() {
   return (
     <Card className="w-full max-w-md mt-4">
       <CardHeader>
-        <CardTitle>Create a New Doctor</CardTitle>
-      </CardHeader>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <CardTitle>Create a New Doctor</CardTitle>
+          </div>
+        </CardHeader>
 
       <CardContent>
         <form id="create-doctor-form" onSubmit={form.handleSubmit(submitDoctor)}>

@@ -26,7 +26,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ArrowLeft } from "lucide-react";
 
 const diagnosisSchema = z.object({
   patient_id: z.string().min(1, "Patient is required"),
@@ -135,8 +135,13 @@ export default function Edit() {
   return (
     <Card className="w-full max-w-md mt-4">
       <CardHeader>
-        <CardTitle>Update Diagnosis</CardTitle>
-      </CardHeader>
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <CardTitle>Update Diagnosis</CardTitle>
+            </div>
+          </CardHeader>
 
       <CardContent>
         <form id="edit-diagnosis-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">

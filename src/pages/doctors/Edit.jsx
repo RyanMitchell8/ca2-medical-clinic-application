@@ -13,6 +13,7 @@ import {
     SelectContent,
     SelectItem,
 } from "@/components/ui/select";
+import { ArrowLeft } from "lucide-react";
 
 const SPECIALISATIONS = [
     "Podiatrist",
@@ -125,8 +126,13 @@ export default function Edit() {
     return (
         <Card className="w-full max-w-md mt-4">
             <CardHeader>
-                <CardTitle>Update Doctor</CardTitle>
-            </CardHeader>
+                        <div className="flex items-center gap-3">
+                            <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+                                <ArrowLeft className="h-4 w-4" />
+                            </Button>
+                            <CardTitle>Update Doctor</CardTitle>
+                        </div>
+                    </CardHeader>
 
             <CardContent>
                 <form id="edit-doctor-form" onSubmit={handleSubmit} className="space-y-3">

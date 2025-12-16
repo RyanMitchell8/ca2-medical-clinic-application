@@ -22,7 +22,7 @@ import {
     PopoverTrigger,
     PopoverContent,
 } from "@/components/ui/popover";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ArrowLeft } from "lucide-react";
 
 
 export default function Edit() {
@@ -154,8 +154,13 @@ export default function Edit() {
     return (
         <Card className="w-full max-w-md mt-4">
             <CardHeader>
-                <CardTitle>Update Prescription</CardTitle>
-            </CardHeader>
+                        <div className="flex items-center gap-3">
+                            <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+                                <ArrowLeft className="h-4 w-4" />
+                            </Button>
+                            <CardTitle>Update Prescription</CardTitle>
+                        </div>
+                    </CardHeader>
 
             <CardContent>
                 <form id="edit-prescription-form" onSubmit={handleSubmit} className="space-y-4">

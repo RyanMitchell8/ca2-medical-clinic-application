@@ -32,7 +32,7 @@ import {
     PopoverTrigger,
     PopoverContent,
 } from "@/components/ui/popover";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ArrowLeft } from "lucide-react";
 
 // Zod schema – validation rules
 const appointmentSchema = z.object({
@@ -123,8 +123,13 @@ export default function Create() {
     return (
         <Card className="w-full max-w-md mt-4">
             <CardHeader>
-                <CardTitle>Create a new Appointment</CardTitle>
-            </CardHeader>
+                        <div className="flex items-center gap-3">
+                            <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+                                <ArrowLeft className="h-4 w-4" />
+                            </Button>
+                            <CardTitle>Create a new Appointment</CardTitle>
+                        </div>
+                    </CardHeader>
 
             <CardContent>
                 <form id="create-appointment-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">

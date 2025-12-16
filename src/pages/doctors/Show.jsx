@@ -1,4 +1,3 @@
-// ...existing code...
 import { useEffect, useState } from "react";
 import axios from "@/config/api";
 import { useParams, Link } from "react-router";

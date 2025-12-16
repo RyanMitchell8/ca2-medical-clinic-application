@@ -4,9 +4,9 @@ import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Eye, Pencil } from "lucide-react";
-import DeleteBtn from "@/components/DeleteBtn";
 import { formatDate } from "@/utils/formatDate";
 import { useAuth } from "@/hooks/useAuth";
+import PatientDelete from "@/components/PatientDelete";
 
 import {
     Table,
@@ -115,10 +115,9 @@ export default function Index() {
                                     </Button>
 
                                     {/* Delete */}
-                                    <DeleteBtn
-                                        onDeleteCallback={onDeleteCallback}
-                                        resource="patients"
-                                        id={patient.id}
+                                    <PatientDelete
+                                        onDeleted={onDeleteCallback}
+                                        patientId={patient.id}
                                     />
                                 </div>
                             </TableCell>

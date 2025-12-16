@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Eye, Pencil } from "lucide-react";
-import DeleteBtn from "@/components/DeleteBtn";
+import DoctorDelete from "@/components/DoctorDelete";
 import { useAuth } from "@/hooks/useAuth";
 
 
@@ -108,7 +108,7 @@ export default function Index() {
                 size="icon"
                 onClick={() => navigate(`/doctors/${doctor.id}/edit`)}
               ><Pencil /></Button>
-              <DeleteBtn onDeleteCallback={onDeleteCallback} resource="doctors" id={doctor.id} />
+              <DoctorDelete doctorId={doctor.id} />
               </div>
 
             </TableCell>

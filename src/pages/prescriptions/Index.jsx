@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import axios from "@/config/api";
 import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,53 @@ export default function Index() {
     fetchPrescriptions();
   }, [token]);
 
+  useEffect(() => {
+    if (!token) return;
+    const fetchLists = async () => {
+      try {
+        const [patRes, docRes, diagRes] = await Promise.all([
+          axios.get("/patients", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get("/doctors", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get("/diagnoses", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+        setPatients(patRes.data);
+        setDoctors(docRes.data);
+        setDiagnoses(diagRes.data);
+      }
+      catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchLists();
+  }, [token]);
+
+  const [patients, setPatients] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [diagnoses, setDiagnoses] = useState([]);
+
+  // function to get patient name by id
+  const getPatientNameById = (id) => {
+    const patient = patients.find((p) => p.id === id);
+    return patient ? `${patient.first_name} ${patient.last_name}` : "Unknown";
+  };
+
+  const getDoctorNameById = (id) => {
+    const doctor = doctors.find((d) => d.id === id);
+    return doctor ? `Dr. ${doctor.first_name} ${doctor.last_name}` : "Unknown";
+  };
+
+  const getDiagnosisConditionById = (id) => {
+    const diagnosis = diagnoses.find((d) => d.id === id);
+    return diagnosis ? diagnosis.condition : "Unknown";
+  };
+
   const onDeleteCallback = (id) => {
     toast.success("Prescription deleted successfully");
     setPrescriptions(prescriptions.filter(prescription => prescription.id !== id));
@@ -84,9 +131,9 @@ export default function Index() {
 
         <TableHeader>
           <TableRow>
-            <TableHead>Patient ID</TableHead>
-            <TableHead>Doctor ID</TableHead>
-            <TableHead>Diagnosis ID</TableHead>
+            <TableHead>Patient Name</TableHead>
+            <TableHead>Doctor Name</TableHead>
+            <TableHead>Diagnosis Condition</TableHead>
             <TableHead>Medication</TableHead>
             <TableHead>Dosage</TableHead>
             <TableHead>Start Date</TableHead>
@@ -99,9 +146,9 @@ export default function Index() {
         <TableBody>
           {prescriptions.map((prescription) => (
             <TableRow key={prescription.id}>
-              <TableCell>{prescription.patient_id}</TableCell>
-              <TableCell>{prescription.doctor_id}</TableCell>
-              <TableCell>{prescription.diagnosis_id}</TableCell>
+              <TableCell>{getPatientNameById(prescription.patient_id)}</TableCell>
+              <TableCell>{getDoctorNameById(prescription.doctor_id)}</TableCell>
+              <TableCell>{getDiagnosisConditionById(prescription.diagnosis_id)}</TableCell>
               <TableCell>{prescription.medication}</TableCell>
               <TableCell>{prescription.dosage}</TableCell>
               <TableCell>{formatDate(prescription.start_date)}</TableCell>

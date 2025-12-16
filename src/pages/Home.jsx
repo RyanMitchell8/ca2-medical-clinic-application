@@ -82,7 +82,7 @@ export default function Home() {
     <div className="flex min-h-[80vh] items-center justify-center px-4">
       <div className="w-full max-w-md">
         <h1 className="text-3xl font-bold mb-6 text-center tracking-tight">
-          {showRegister ? "Create an Account" : "Welcome Back"}
+          {showRegister ? "Create Your Clinic Account" : "Welcome to Clinic Manager"}
         </h1>
 
         <Card className="p-6">

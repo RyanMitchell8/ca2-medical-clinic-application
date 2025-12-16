@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "@/config/api";
 import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter, CardAction } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 import { useAuth } from "@/hooks/useAuth";
@@ -54,22 +56,31 @@ export default function Index() {
   };
 
   return (
-    <>
+    <Card className="w-full">
+      <CardHeader className="items-start">
+        <div>
+          <CardTitle>Prescriptions</CardTitle>
+          <CardDescription>{prescriptions.length} total</CardDescription>
+        </div>
 
-      {/* Create Button (same style as festivals project) */}
-      <Button
-        asChild
-        variant="outline"
-        className="mb-4 mr-auto block"
-      >
-        <Link size="sm" to={`/prescriptions/create`}>
-          Create New Prescription
-        </Link>
-      </Button>
+        <CardAction>
+          <Button asChild variant="outline" size="sm">
+            <Link to={`/prescriptions/create`}>Create</Link>
+          </Button>
+        </CardAction>
+      </CardHeader>
 
-      {/* Table */}
-      <Table>
-        <TableCaption>List of prescriptions.</TableCaption>
+      <CardContent>
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Input placeholder="Search medication or patient id" className="w-72" />
+          </div>
+          <div className="text-sm text-muted-foreground">Showing {prescriptions.length} prescriptions</div>
+        </div>
+
+        {/* Table */}
+        <Table className="overflow-visible">
+          <TableCaption>List of prescriptions.</TableCaption>
 
         <TableHeader>
           <TableRow>
@@ -117,8 +128,8 @@ export default function Index() {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
-
-    </>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }

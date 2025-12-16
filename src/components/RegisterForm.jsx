@@ -6,6 +6,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UserPlus } from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 
 const registerSchema = z
   .object({
@@ -47,83 +56,89 @@ export default function Register() {
   };
 
   return (
-    <>
-      <h1>Create an account</h1>
-      <form onSubmit={form.handleSubmit(submitForm)}>
-        <Controller
-          name="first_name"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <div>
-              <Label>First Name</Label>
-              <Input {...field} />
-              {fieldState.error && (
-                <p className="text-red-600">{fieldState.error.message}</p>
-              )}
-            </div>
-          )}
-        />
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <div className="flex items-center gap-3">
+          <div className="rounded-full bg-muted p-2">
+            <UserPlus className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <CardTitle>Create an account</CardTitle>
+            <CardDescription>Enter your details to register</CardDescription>
+          </div>
+        </div>
+      </CardHeader>
 
-        <Controller
-          name="last_name"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <div className="mt-2">
-              <Label>Last Name</Label>
-              <Input {...field} />
-              {fieldState.error && (
-                <p className="text-red-600">{fieldState.error.message}</p>
-              )}
-            </div>
-          )}
-        />
+      <CardContent>
+        <form id="register-form" onSubmit={form.handleSubmit(submitForm)} className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Controller
+            name="first_name"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <div>
+                <Label>First Name</Label>
+                <Input {...field} />
+                {fieldState.error && <p className="text-red-600">{fieldState.error.message}</p>}
+              </div>
+            )}
+          />
 
-        <Controller
-          name="email"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <div className="mt-2">
-              <Label>Email</Label>
-              <Input type="email" {...field} />
-              {fieldState.error && (
-                <p className="text-red-600">{fieldState.error.message}</p>
-              )}
-            </div>
-          )}
-        />
+          <Controller
+            name="last_name"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <div>
+                <Label>Last Name</Label>
+                <Input {...field} />
+                {fieldState.error && <p className="text-red-600">{fieldState.error.message}</p>}
+              </div>
+            )}
+          />
 
-        <Controller
-          name="password"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <div className="mt-2">
-              <Label>Password</Label>
-              <Input type="password" {...field} />
-              {fieldState.error && (
-                <p className="text-red-600">{fieldState.error.message}</p>
+          <div className="md:col-span-2">
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <div>
+                  <Label>Email</Label>
+                  <Input type="email" {...field} />
+                  {fieldState.error && <p className="text-red-600">{fieldState.error.message}</p>}
+                </div>
               )}
-            </div>
-          )}
-        />
+            />
+          </div>
 
-        <Controller
-          name="confirm_password"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <div className="mt-2">
-              <Label>Confirm Password</Label>
-              <Input type="password" {...field} />
-              {fieldState.error && (
-                <p className="text-red-600">{fieldState.error.message}</p>
-              )}
-            </div>
-          )}
-        />
+          <Controller
+            name="password"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <div>
+                <Label>Password</Label>
+                <Input type="password" {...field} />
+                {fieldState.error && <p className="text-red-600">{fieldState.error.message}</p>}
+              </div>
+            )}
+          />
 
-        <Button className="mt-4" type="submit" variant="outline">
-          Register
-        </Button>
-      </form>
-    </>
+          <Controller
+            name="confirm_password"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <div>
+                <Label>Confirm Password</Label>
+                <Input type="password" {...field} />
+                {fieldState.error && <p className="text-red-600">{fieldState.error.message}</p>}
+              </div>
+            )}
+          />
+        </form>
+      </CardContent>
+
+      <CardFooter>
+        <Button className="w-full" form="register-form" type="submit">Register</Button>
+      </CardFooter>
+    </Card>
   );
 }
+

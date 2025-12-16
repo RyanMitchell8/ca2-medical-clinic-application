@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "@/config/api";
 import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 import { formatDate } from "@/utils/formatDate";
@@ -46,20 +47,25 @@ export default function Index() {
     };
 
     return (
-        <>
-            {/* Create Button */}
-            <Button
-                asChild
-                variant="outline"
-                className="mb-4 mr-auto block"
-            >
-                <Link size="sm" to={`/patients/create`}>
-                    Create New Patient
-                </Link>
-            </Button>
+        <Card className="w-full">
+            <CardHeader>
+                <CardTitle>Patients</CardTitle>
+            </CardHeader>
 
-            {/* Table */}
-            <Table>
+            <CardContent>
+                {/* Create Button */}
+                <Button
+                    asChild
+                    variant="outline"
+                    className="mb-4 mr-auto block"
+                >
+                    <Link size="sm" to={`/patients/create`}>
+                        Create New Patient
+                    </Link>
+                </Button>
+
+                {/* Table */}
+                <Table>
                 <TableCaption>List of patients.</TableCaption>
 
                 <TableHeader>
@@ -117,7 +123,8 @@ export default function Index() {
                         </TableRow>
                     ))}
                 </TableBody>
-            </Table>
-        </>
+                </Table>
+            </CardContent>
+        </Card>
     );
 }

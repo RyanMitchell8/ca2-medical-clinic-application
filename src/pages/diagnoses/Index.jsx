@@ -7,7 +7,6 @@ import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 import { useAuth } from "@/hooks/useAuth";
 
-
 import {
     Table,
     TableBody,
@@ -24,6 +23,29 @@ export default function Index() {
     const [diagnoses, setDiagnoses] = useState([]);
     const { token } = useAuth();
     const navigate = useNavigate();
+    const [patients, setPatients] = useState([]);
+
+    useEffect(() => {
+        if (!token) return;
+        const fetchPatients = async () => {
+            const options = {
+                method: "GET",
+                url: "/patients",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+            try {
+                let response = await axios.request(options);
+                console.log(response.data);
+                setPatients(response.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        fetchPatients();
+    }, [token]);
 
     useEffect(() => {
         if (!token) return;
@@ -47,6 +69,12 @@ export default function Index() {
 
         fetchDiagnoses();
     }, [token]);
+
+    // function to get patient name by id
+    const getPatientNameById = (id) => {
+        const patient = patients.find((p) => Number(p.id) === Number(id));
+        return patient ? `${patient.first_name} ${patient.last_name}` : "Unknown";
+    };
 
     const onDeleteCallback = (id) => {
         toast.success("Diagnosis deleted successfully");
@@ -78,7 +106,7 @@ export default function Index() {
                 <TableHeader>
                     <TableRow>
                         <TableHead>ID</TableHead>
-                        <TableHead>Patient ID</TableHead>
+                        <TableHead>Patient Name</TableHead>
                         <TableHead>Condition</TableHead>
                         <TableHead>Diagnosis Date</TableHead>
                         <TableHead>Actions</TableHead>
@@ -89,7 +117,7 @@ export default function Index() {
                     {diagnoses.map((diagnosis) => (
                         <TableRow key={diagnosis.id}>
                             <TableCell>{diagnosis.id}</TableCell>
-                            <TableCell>{diagnosis.patient_id}</TableCell>
+                            <TableCell>{getPatientNameById(diagnosis.patient_id)}</TableCell>
                             <TableCell>{diagnosis.condition}</TableCell>
                             <TableCell>{formatDate(diagnosis.diagnosis_date)}</TableCell>
 

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
+import { useAuth } from "@/hooks/useAuth";
+
 
 import {
   Table,
@@ -21,6 +23,8 @@ export default function Index() {
   const [doctors, setDoctors] = useState([]);
 
   const navigate = useNavigate();
+
+  const { token } = useAuth();
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -39,7 +43,7 @@ export default function Index() {
     };
 
     fetchDoctors();
-  }, []);
+  }, [token]);
 
   const onDeleteCallback = (id) => {
     toast.success("Doctor deleted successfully");

@@ -133,7 +133,7 @@ export default function Create() {
 
             <CardContent>
                 <form id="create-appointment-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                {/* Appointment Date with calendar popup */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">
                         Appointment Date
@@ -178,7 +178,7 @@ export default function Create() {
                     />
                 </div>
 
-                {/* Doctor dropdown */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Doctor</label>
 
@@ -215,7 +215,7 @@ export default function Create() {
                     />
                 </div>
 
-                {/* Patient dropdown */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Patient</label>
 

@@ -26,7 +26,7 @@ export default function Home() {
   if (token) {
     return (
       <div className="container mx-auto pt-20 px-4">
-        {/* Header */}
+        
         <div className="mb-10 text-center">
           <h1 className="text-4xl font-bold tracking-tight mb-2">
             Dashboard
@@ -36,7 +36,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Dashboard cards */}
+        
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <DashboardCard
             to="/doctors"

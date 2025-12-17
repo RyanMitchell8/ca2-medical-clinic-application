@@ -84,8 +84,7 @@ export default function Show() {
     fetchRelated();
   }, [doctor, token]);
 
-  // using hook-provided getPatientNameById
-
+  
   if (!doctor) return <p>Loading doctor...</p>;
 
   return (
@@ -124,7 +123,7 @@ export default function Show() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Info Grid */}
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <InfoBox label="Email" value={doctor.email} />
             <InfoBox label="Phone" value={doctor.phone} />

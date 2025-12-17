@@ -56,7 +56,7 @@ export default function Index() {
             </CardHeader>
 
             <CardContent>
-                {/* Create Button */}
+                
                 <Button
                     asChild
                     variant="outline"
@@ -67,7 +67,7 @@ export default function Index() {
                     </Link>
                 </Button>
 
-                {/* Table */}
+                
                 <Table>
                 <TableCaption>List of patients.</TableCaption>
 
@@ -94,7 +94,7 @@ export default function Index() {
                             <TableCell>
                                 <div className="flex gap-2">
 
-                                    {/* View */}
+                                    
                                     <Button
                                         className="cursor-pointer hover:border-blue-500"
                                         variant="outline"
@@ -104,7 +104,7 @@ export default function Index() {
                                         <Eye />
                                     </Button>
 
-                                    {/* Edit */}
+                                    
                                     <Button
                                         className="cursor-pointer hover:border-blue-500"
                                         variant="outline"
@@ -114,7 +114,7 @@ export default function Index() {
                                         <Pencil />
                                     </Button>
 
-                                    {/* Delete */}
+                                    
                                     <PatientDelete
                                         onDeleted={onDeleteCallback}
                                         patientId={patient.id}

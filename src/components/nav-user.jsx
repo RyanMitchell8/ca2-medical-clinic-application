@@ -62,14 +62,14 @@ export function NavUser({ user }) {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
 
-          {/* Dropdown panel */}
+          
           <DropdownMenuContent
             className="min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
-            {/* Header section */}
+            
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-2 py-2 text-sm">
                 <Avatar className="h-9 w-9 rounded-lg">

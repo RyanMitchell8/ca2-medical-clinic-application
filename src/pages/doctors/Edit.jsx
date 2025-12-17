@@ -136,7 +136,7 @@ export default function Edit() {
 
             <CardContent>
                 <form id="edit-doctor-form" onSubmit={handleSubmit} className="space-y-3">
-                {/* First Name */}
+                
                 <Input
                     type="text"
                     name="first_name"
@@ -148,7 +148,7 @@ export default function Edit() {
                     <p className="text-red-500 text-sm">{errors.first_name}</p>
                 )}
 
-                {/* Last Name */}
+                
                 <Input
                     type="text"
                     name="last_name"
@@ -161,7 +161,7 @@ export default function Edit() {
                     <p className="text-red-500 text-sm">{errors.last_name}</p>
                 )}
 
-                {/* Email */}
+                
                 <Input
                     type="email"
                     name="email"
@@ -172,7 +172,7 @@ export default function Edit() {
                 />
                 {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
-                {/* Phone */}
+                
                 <Input
                     type="text"
                     name="phone"
@@ -183,7 +183,7 @@ export default function Edit() {
                 />
                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
 
-                {/* Specialisation */}
+                
                 <div className="mt-2">
                     <label className="block text-sm font-medium">Specialisation</label>
 

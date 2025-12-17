@@ -112,7 +112,7 @@ export default function Edit() {
 
             <CardContent>
                 <form id="edit-patient-form" onSubmit={handleSubmit} className="space-y-4">
-                {/* First Name */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">First Name</label>
                     <Input
@@ -121,7 +121,7 @@ export default function Edit() {
                         placeholder="First Name"
                     />
                 </div>
-                {/* Last Name */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Last Name</label>
                     <Input
@@ -130,7 +130,7 @@ export default function Edit() {
                         placeholder="Last Name"
                     />
                 </div>
-                {/* Email */}   
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Email</label>
                     <Input
@@ -140,7 +140,7 @@ export default function Edit() {
                         placeholder="Email"
                     />
                 </div>
-                {/* Phone */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Phone</label>
                     <Input
@@ -149,7 +149,7 @@ export default function Edit() {
                         placeholder="Phone"
                     />
                 </div>
-                {/* Calendar */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Date of Birth</label>
                     <Popover open={dateOpen} onOpenChange={setDateOpen}>
@@ -171,7 +171,7 @@ export default function Edit() {
                         </PopoverContent>
                     </Popover>
                 </div>
-                {/* Address */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Address</label>
                     <Input

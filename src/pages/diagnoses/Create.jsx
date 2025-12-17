@@ -115,7 +115,7 @@ export default function Create() {
             <CardContent>
                 <form id="create-diagnosis-form" onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 
-                {/* patient select */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Patient</label>
                     <Controller
@@ -143,7 +143,7 @@ export default function Create() {
                     />
                 </div>
 
-                {/* condition input */}
+                
                 <Input
                     {...register("condition")}
                     name="condition"
@@ -155,7 +155,7 @@ export default function Create() {
                     <p className="text-red-500 text-sm">{errors.condition.message}</p>
                 )}
 
-                {/* diagnosis date */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Diagnosis Date</label>
 

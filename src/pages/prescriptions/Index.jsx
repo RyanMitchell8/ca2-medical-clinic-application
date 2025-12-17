@@ -60,7 +60,7 @@ export default function Index() {
   const { getDoctorNameById } = useDoctors();
   const { getDiagnosisNameById } = useDiagnoses();
 
-  // using hooks: getPatientNameById, getDoctorNameById, getDiagnosisNameById
+  
 
   const onDeleteCallback = (id) => {
     toast.success("Prescription deleted successfully");
@@ -91,7 +91,7 @@ export default function Index() {
           <div className="text-sm text-muted-foreground">Showing {prescriptions.length} prescriptions</div>
         </div>
 
-        {/* Table */}
+        
         <Table className="overflow-visible">
           <TableCaption>List of prescriptions.</TableCaption>
 

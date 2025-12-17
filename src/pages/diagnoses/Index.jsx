@@ -30,11 +30,10 @@ export default function Index() {
     const [patients, setPatients] = useState([]);
 
     useEffect(() => {
-        // sync hook diagnoses into local state for UI updates (deletes)
         setLocalDiagnoses(diagnoses || []);
     }, [diagnoses]);
 
-    // use hook-provided name lookup
+    
     const onDeleteCallback = (id) => {
         toast.success("Diagnosis deleted successfully");
         setLocalDiagnoses(localDiagnoses.filter(d => d.id !== id));
@@ -47,7 +46,7 @@ export default function Index() {
             </CardHeader>
 
             <CardContent>
-                {/* Create Button */}
+                
                 <Button
                     asChild
                     variant="outline"
@@ -58,7 +57,7 @@ export default function Index() {
                     </Link>
                 </Button>
 
-                {/* Table */}
+                
                 <Table>
                 <TableCaption>List of diagnoses.</TableCaption>
 

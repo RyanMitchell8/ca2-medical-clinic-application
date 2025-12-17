@@ -58,7 +58,7 @@ export default function Index() {
       </CardHeader>
 
       <CardContent>
-        {/* Create Button */}
+        
         <Button
           asChild
           variant="outline"
@@ -69,7 +69,7 @@ export default function Index() {
           </Link>
         </Button>
 
-        {/* Table */}
+                
         <Table>
         <TableCaption>List of doctors.</TableCaption>
 

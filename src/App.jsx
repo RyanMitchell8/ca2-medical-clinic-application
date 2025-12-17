@@ -59,10 +59,10 @@ export default function App() {
 
                   <Routes>
 
-                    {/* Public Home */}
+                    
                     <Route path="/" element={<Home />} />
 
-                    {/* Public Read-Only Routes */}
+                    
                     <Route path="/doctors" element={<DoctorsIndex />} />
                     <Route path="/doctors/:id" element={<DoctorsShow />} />
 
@@ -78,26 +78,26 @@ export default function App() {
                     <Route path="/prescriptions" element={<PrescriptionsIndex />} />
                     <Route path="/prescriptions/:id" element={<PrescriptionsShow />} />
 
-                    {/* PROTECTED CRUD ROUTES */}
+                    
                     <Route element={<ProtectedRoute />}>
                       
-                      {/* Doctors */}
+                      
                       <Route path="/doctors/create" element={<DoctorsCreate />} />
                       <Route path="/doctors/:id/edit" element={<DoctorsEdit />} />
 
-                      {/* Patients */}
+                      
                       <Route path="/patients/create" element={<PatientsCreate />} />
                       <Route path="/patients/:id/edit" element={<PatientsEdit />} />
 
-                      {/* Appointments */}
+                      
                       <Route path="/appointments/create" element={<AppointmentsCreate />} />
                       <Route path="/appointments/:id/edit" element={<AppointmentsEdit />} />
 
-                      {/* Diagnoses */}
+                      
                       <Route path="/diagnoses/create" element={<DiagnosesCreate />} />
                       <Route path="/diagnoses/:id/edit" element={<DiagnosesEdit />} />
 
-                      {/* Prescriptions */}
+                      
                       <Route path="/prescriptions/create" element={<PrescriptionsCreate />} />
                       <Route path="/prescriptions/:id/edit" element={<PrescriptionsEdit />} />
 

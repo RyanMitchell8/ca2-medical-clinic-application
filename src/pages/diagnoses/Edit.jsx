@@ -145,7 +145,7 @@ export default function Edit() {
 
       <CardContent>
         <form id="edit-diagnosis-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Patient Select */}
+        
         <div>
           <label className="block mb-1 text-sm font-medium">Patient</label>
           <Controller
@@ -177,7 +177,7 @@ export default function Edit() {
           />
         </div>
 
-        {/* Condition */}
+        
         <div>
           <Input
             {...register("condition")}
@@ -189,7 +189,7 @@ export default function Edit() {
           )}
         </div>
 
-        {/* Diagnosis Date */}
+        
         <div>
           <label className="block mb-1 text-sm font-medium">
             Diagnosis Date
@@ -235,7 +235,7 @@ export default function Edit() {
           />
         </div>
 
-        {/* Submit */}
+        
         </form>
       </CardContent>
 

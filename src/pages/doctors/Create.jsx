@@ -120,7 +120,7 @@ export default function Create() {
         <form id="create-doctor-form" onSubmit={form.handleSubmit(submitDoctor)}>
           <div className="flex flex-col gap-6">
 
-            {/* First Name */}
+            
             <Controller
               name="first_name"
               control={form.control}
@@ -133,7 +133,7 @@ export default function Create() {
               )}
             />
 
-            {/* Last Name */}
+            
             <Controller
               name="last_name"
               control={form.control}
@@ -146,7 +146,7 @@ export default function Create() {
               )}
             />
 
-            {/* Email */}
+            
             <Controller
               name="email"
               control={form.control}
@@ -159,7 +159,7 @@ export default function Create() {
               )}
             />
 
-            {/* Phone */}
+            
             <Controller
               name="phone"
               control={form.control}
@@ -173,7 +173,7 @@ export default function Create() {
               )}
             />
 
-            {/* Specialisation */}
+            
             <Controller
               name="specialisation"
               control={form.control}
@@ -207,7 +207,7 @@ export default function Create() {
               )}
             />
 
-            {/* Server Errors */}
+            
             {form.formState.errors.root && (
               <p className="text-red-600 text-sm">
                 {form.formState.errors.root.message}

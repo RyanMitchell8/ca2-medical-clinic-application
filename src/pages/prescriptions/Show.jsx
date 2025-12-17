@@ -36,7 +36,6 @@ export default function Show() {
     fetchPrescription();
   }, [id, token]);
 
-  // If NOT logged in
   if (!token) {
     return (
       <p className="text-center mt-6 text-gray-500">
@@ -45,7 +44,6 @@ export default function Show() {
     );
   }
 
-  // If logged in but still loading
   if (!prescription) {
     return <p className="text-center mt-6">Loading appointment...</p>;
   }

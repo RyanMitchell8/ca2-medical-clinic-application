@@ -88,7 +88,7 @@ export default function Show() {
     return (
         <div className="space-y-10">
 
-            {/* Sticky Header */}
+            
             <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-sm border-b py-3">
                 <div className="flex items-center justify-between max-w-5xl mx-auto px-1">
                     <h1 className="text-3xl font-bold tracking-tight">Patient Details</h1>
@@ -105,7 +105,7 @@ export default function Show() {
                 </div>
             </div>
 
-            {/* Patient Information */}
+            
             <Card className="shadow-md border border-gray-200">
                 <CardHeader>
                     <CardTitle className="text-2xl font-semibold">
@@ -121,7 +121,7 @@ export default function Show() {
                 </CardContent>
             </Card>
 
-            {/* Appointments */}
+            
             <DataSection title="Appointments">
                 {appointments.length === 0 ? (
                     <EmptyState message="No appointments found." />
@@ -150,7 +150,7 @@ export default function Show() {
                 )}
             </DataSection>
 
-            {/* Prescriptions */}
+            
             <DataSection title="Prescriptions">
                 {prescriptions.length === 0 ? (
                     <EmptyState message="No prescriptions found." />
@@ -179,7 +179,7 @@ export default function Show() {
                 )}
             </DataSection>
 
-            {/* Diagnoses */}
+            
             <DataSection title="Diagnoses">
                 {diagnoses.length === 0 ? (
                     <EmptyState message="No diagnoses found." />

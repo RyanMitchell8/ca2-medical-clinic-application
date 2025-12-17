@@ -48,7 +48,6 @@ export default function Show() {
   }, [token]);
 
 
-  // If NOT logged in
   if (!token) {
     return (
       <p className="text-center mt-6 text-gray-500">
@@ -57,7 +56,6 @@ export default function Show() {
     );
   }
 
-  // If logged in but still loading
   if (!appointment) {
     return <p className="text-center mt-6">Loading appointment...</p>;
   }
@@ -76,11 +74,10 @@ export default function Show() {
   }
 
 
-  // using hook-provided getPatientNameById and getDoctorNameById
-
+  
   return (
     <Card className="max-w-4xl mx-auto">
-      {/* Header */}
+      
       <CardHeader>
         <CardTitle className="text-2xl">
           Appointment Details
@@ -91,7 +88,7 @@ export default function Show() {
       </CardHeader>
 
       <CardContent className="space-y-8">
-        {/* Key info */}
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <p className="text-sm text-muted-foreground">Appointment ID</p>
@@ -124,7 +121,7 @@ export default function Show() {
           </div>
         </div>
 
-        {/* Calendar */}
+        
         <div>
           <p className="text-sm text-muted-foreground mb-2">
             Appointment date

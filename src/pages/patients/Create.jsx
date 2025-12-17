@@ -103,7 +103,7 @@ export default function Create() {
 
             <CardContent>
                 <form id="create-patient-form" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-4">
-                {/* First Name */}
+                
                 <div>
                     <label>First Name</label>
                     <Controller
@@ -119,7 +119,7 @@ export default function Create() {
                         </p>
                     )}
                 </div>
-                {/* Last Name */}
+                
                 <div>
                     <label>Last Name</label>
                     <Controller
@@ -135,7 +135,7 @@ export default function Create() {
                         </p>
                     )}
                 </div>
-                {/* Email */}
+                
                 <div>
                     <label>Email</label>
                     <Controller
@@ -151,7 +151,7 @@ export default function Create() {
                         </p>
                     )}
                 </div>
-                {/* Phone */}
+                
                 <div>
                     <label>Phone</label>
                     <Controller
@@ -167,7 +167,7 @@ export default function Create() {
                         </p>
                     )}
                 </div>
-                {/* Date of Birth */}
+                
                 <div>
                     <label>Date of Birth</label>
                     <Controller
@@ -202,7 +202,7 @@ export default function Create() {
                         </p>
                     )}
                 </div>
-                {/* Address */}
+                
                     
                 <div>
                     <label>Address</label>

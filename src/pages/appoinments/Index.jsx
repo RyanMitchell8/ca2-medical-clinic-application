@@ -44,7 +44,7 @@ export default function Index() {
         if (token) fetchAll();
     }, [token]);
 
-    // using hook-provided getPatientNameById and getDoctorNameById
+    
 
     const onDeleteCallback = (id) => {
         toast.success("Appointment deleted successfully");
@@ -97,7 +97,7 @@ export default function Index() {
                             <TableCell>
                                 <div className="flex gap-2">
 
-                                    {/* View */}
+                                    
                                     <Button
                                         className="cursor-pointer hover:border-blue-500"
                                         variant="outline"
@@ -107,7 +107,7 @@ export default function Index() {
                                         <Eye />
                                     </Button>
 
-                                    {/* Only show edit/delete if logged in */}
+                                    
                                     {token && (
                                         <>
                                             <Button

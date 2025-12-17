@@ -125,7 +125,7 @@ export default function Edit() {
 
             <CardContent>
                 <form id="edit-appointment-form" onSubmit={handleSubmit} className="space-y-4">
-                {/* Calendar */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Appointment Date</label>
                     <Popover open={dateOpen} onOpenChange={setDateOpen}>
@@ -148,7 +148,7 @@ export default function Edit() {
                     </Popover>
                 </div>
 
-                {/* Doctor select */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Doctor</label>
                     <Select value={form.doctor_id} onValueChange={(v) => setForm(prev => ({ ...prev, doctor_id: v }))}>
@@ -163,7 +163,7 @@ export default function Edit() {
                     </Select>
                 </div>
 
-                {/* Patient select */}
+                
                 <div>
                     <label className="block mb-1 text-sm font-medium">Patient</label>
                     <Select value={form.patient_id} onValueChange={(v) => setForm(prev => ({ ...prev, patient_id: v }))}>

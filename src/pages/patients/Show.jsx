@@ -89,7 +89,7 @@ export default function Show() {
         <div className="space-y-10">
 
             
-            <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-sm border-b py-3">
+            <div className="sticky top-0 z-20 bg-background/90 backdrop-blur-sm border-b py-3">
                 <div className="flex items-center justify-between max-w-5xl mx-auto px-1">
                     <h1 className="text-3xl font-bold tracking-tight">Patient Details</h1>
 
@@ -106,7 +106,7 @@ export default function Show() {
             </div>
 
             
-            <Card className="shadow-md border border-gray-200">
+            <Card className="shadow-md border">
                 <CardHeader>
                     <CardTitle className="text-2xl font-semibold">
                         {patient.first_name} {patient.last_name}
@@ -140,7 +140,7 @@ export default function Show() {
 
                         {appointments.length > MAX_VISIBLE && (
                             <button
-                                className="text-blue-600 text-sm font-medium mt-2"
+                                className="text-primary text-sm font-medium mt-2"
                                 onClick={() => setShowAllAppointments(prev => !prev)}
                             >
                                 {showAllAppointments ? "View Less" : "View More"}
@@ -169,7 +169,7 @@ export default function Show() {
 
                         {prescriptions.length > MAX_VISIBLE && (
                             <button
-                                className="text-blue-600 text-sm font-medium mt-2"
+                                className="text-primary text-sm font-medium mt-2"
                                 onClick={() => setShowAllPrescriptions(prev => !prev)}
                             >
                                 {showAllPrescriptions ? "View Less" : "View More"}
@@ -198,7 +198,7 @@ export default function Show() {
 
                         {diagnoses.length > MAX_VISIBLE && (
                             <button
-                                className="text-blue-600 text-sm font-medium mt-2"
+                                className="text-primary text-sm font-medium mt-2"
                                 onClick={() => setShowAllDiagnoses(prev => !prev)}
                             >
                                 {showAllDiagnoses ? "View Less" : "View More"}
@@ -258,7 +258,7 @@ function StyledTable({ headers, rows }) {
 
 function EmptyState({ message }) {
     return (
-        <div className="text-sm text-muted-foreground bg-gray-50 border rounded-md p-3">
+        <div className="text-sm text-muted-foreground bg-input border rounded-md p-3">
             {message}
         </div>
     );

@@ -89,7 +89,7 @@ export default function Show() {
 
   return (
     <div className="space-y-6">
-      <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-sm border-b py-3">
+      <div className="sticky top-0 z-20 bg-background/90 backdrop-blur-sm border-b py-3">
       <div className="flex items-center justify-between max-w-5xl mx-auto px-1">
         <h1 className="text-3xl font-bold tracking-tight">Doctor Details</h1>
 
@@ -105,7 +105,7 @@ export default function Show() {
       </div>
     </div>
 
-      <Card className="shadow-md border border-gray-200">
+      <Card className="shadow-md border">
         <CardHeader className="flex flex-row items-center gap-4">
           <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-xl font-semibold">
             {doctor.first_name[0]}
@@ -145,16 +145,16 @@ export default function Show() {
                 ? doctorAppointments
                 : doctorAppointments.slice(0, MAX_VISIBLE)
               ).map((a) => (
-                <Card key={a.id} className="p-3 bg-gray-50 border">
+                <Card key={a.id} className="p-3 bg-input border">
                   <div className="flex justify-between items-center">
                     <Link
                       to={`/appointments/${a.id}`}
-                      className="font-medium text-blue-600 hover:underline"
+                      className="font-medium text-primary hover:underline"
                     >
                       {formatDate(a.appointment_date || a.date || a.created_at)}
                     </Link>
 
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-muted-foreground">
                       Patient {a.patient_id} - {getPatientNameById(a.patient_id)}
                     </span>
                   </div>
@@ -164,7 +164,7 @@ export default function Show() {
               {doctorAppointments.length > MAX_VISIBLE && (
                 <button
                   onClick={() => setShowAllAppointments((prev) => !prev)}
-                  className="text-blue-600 text-sm font-medium hover:underline"
+                  className="text-primary text-sm font-medium hover:underline"
                 >
                   {showAllAppointments ? "View Less" : "View More"}
                 </button>
@@ -196,12 +196,12 @@ export default function Show() {
                 const d = p.prescription_date || p.date || p.created_at;
 
                 return (
-                  <Card key={p.id} className="p-3 bg-gray-50 border">
+                  <Card key={p.id} className="p-3 bg-input border">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">
                         #{p.id} — {med}
                       </span>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-muted-foreground">
                         {formatDate(d)} — Patient {p.patient_id} - {getPatientNameById(p.patient_id)}
                       </span>
                     </div>
@@ -212,7 +212,7 @@ export default function Show() {
               {prescriptions.length > MAX_VISIBLE && (
                 <button
                   onClick={() => setShowAllPrescriptions((prev) => !prev)}
-                  className="text-blue-600 text-sm font-medium hover:underline"
+                  className="text-primary text-sm font-medium hover:underline"
                 >
                   {showAllPrescriptions ? "View Less" : "View More"}
                 </button>
@@ -227,7 +227,7 @@ export default function Show() {
 
 function InfoBox({ label, value }) {
   return (
-    <div className="p-3 rounded-lg border bg-white shadow-sm">
+    <div className="p-3 rounded-lg border bg-input shadow-sm">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="font-medium">{value}</p>
     </div>
@@ -240,7 +240,7 @@ function SectionHeader({ title }) {
 
 function EmptyState({ message }) {
   return (
-    <div className="text-sm text-muted-foreground bg-gray-50 border rounded-md p-3">
+    <div className="text-sm text-muted-foreground bg-input border rounded-md p-3">
       {message}
     </div>
   );

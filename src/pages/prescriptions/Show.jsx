@@ -38,7 +38,7 @@ export default function Show() {
 
   if (!token) {
     return (
-      <p className="text-center mt-6 text-gray-500">
+      <p className="text-center mt-6 text-muted-foreground">
         You must be logged in to view prescription details.
       </p>
     );

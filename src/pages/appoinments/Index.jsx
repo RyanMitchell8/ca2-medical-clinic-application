@@ -7,6 +7,8 @@ import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 import { formatDate } from "@/utils/formatDate";
 import { useAuth } from "@/hooks/useAuth";
+import { usePatients } from "@/hooks/usePatients";
+import { useDoctors } from "@/hooks/useDoctors";
 import { toast } from "sonner";
 
 import {
@@ -21,23 +23,16 @@ import {
 
 export default function Index() {
     const [appointments, setAppointments] = useState([]);
-    const [patients, setPatients] = useState([]);
-    const [doctors, setDoctors] = useState([]);
+    const { getPatientNameById } = usePatients();
+    const { getDoctorNameById } = useDoctors();
     const navigate = useNavigate();
     const { token } = useAuth();
 
     useEffect(() => {
         const fetchAll = async () => {
             try {
-                const [apptsRes, doctorsRes, patientsRes] = await Promise.all([
-                    axios.get("/appointments", { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get("/doctors", { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get("/patients", { headers: { Authorization: `Bearer ${token}` } }),
-                ]);
-
-                setAppointments(Array.isArray(apptsRes.data) ? apptsRes.data : []);
-                setDoctors(Array.isArray(doctorsRes.data) ? doctorsRes.data : []);
-                setPatients(Array.isArray(patientsRes.data) ? patientsRes.data : []);
+                        const apptsRes = await axios.get("/appointments", { headers: { Authorization: `Bearer ${token}` } });
+                        setAppointments(Array.isArray(apptsRes.data) ? apptsRes.data : []);
             } catch (err) {
                 console.log(err);
                 setAppointments([]);
@@ -49,17 +44,7 @@ export default function Index() {
         if (token) fetchAll();
     }, [token]);
 
-    // function to get patient name by id
-    const getPatientNameById = (id) => {
-        const patient = patients.find((p) => Number(p.id) === Number(id));
-        return patient ? `${patient.first_name} ${patient.last_name}` : "Unknown";
-    };
-
-    // function to get doctor name by id
-    const getDoctorNameById = (id) => {
-        const doctor = doctors.find((d) => Number(d.id) === Number(id));
-        return doctor ? `${doctor.first_name} ${doctor.last_name}` : "Unknown";
-    };
+    // using hook-provided getPatientNameById and getDoctorNameById
 
     const onDeleteCallback = (id) => {
         toast.success("Appointment deleted successfully");

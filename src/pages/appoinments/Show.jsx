@@ -12,14 +12,16 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
+import { usePatients } from "@/hooks/usePatients";
+import { useDoctors } from "@/hooks/useDoctors";
 
 export default function Show() {
   const { id } = useParams();
   const { token } = useAuth();
   const [appointment, setAppointment] = useState(null);
 
-  const [doctors, setDoctors] = useState([]);
-  const [patients, setPatients] = useState([]);
+  const { getPatientNameById } = usePatients();
+  const { getDoctorNameById } = useDoctors();
 
   useEffect(() => {
     if (!token) return;
@@ -42,26 +44,7 @@ export default function Show() {
   }, [id, token]);
 
   useEffect(() => {
-    if (!token) return;
-    const fetchLists = async () => {
-      try {
-        const [docRes, patRes] = await Promise.all([
-          axios.get("/doctors", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get("/patients", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-        setDoctors(docRes.data);
-        setPatients(patRes.data);
-      }
-      catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchLists();
+    // patient & doctor name lookups are handled by hooks
   }, [token]);
 
 
@@ -93,17 +76,7 @@ export default function Show() {
   }
 
 
-  // function to get patient name by id
-  const getPatientNameById = (id) => {
-    const patient = patients.find((p) => Number(p.id) === Number(id));
-    return patient ? `${patient.first_name} ${patient.last_name}` : "Unknown";
-  };
-
-  // function to get doctor name by id
-  const getDoctorNameById = (id) => {
-    const doctor = doctors.find((d) => Number(d.id) === Number(id));
-    return doctor ? `${doctor.first_name} ${doctor.last_name}` : "Unknown";
-  };
+  // using hook-provided getPatientNameById and getDoctorNameById
 
   return (
     <Card className="max-w-4xl mx-auto">

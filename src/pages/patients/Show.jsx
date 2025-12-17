@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "@/config/api";
 import { useParams, Link } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { useDoctors } from "@/hooks/useDoctors";
 import { formatDate } from "@/utils/formatDate";
 
 import {
@@ -29,7 +30,7 @@ export default function Show() {
     const [patient, setPatient] = useState(null);
     const [appointments, setAppointments] = useState([]);
     const [prescriptions, setPrescriptions] = useState([]);
-    const [doctors, setDoctors] = useState([]);
+    const { getDoctorNameById } = useDoctors();
     const [diagnoses, setDiagnoses] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -47,7 +48,7 @@ export default function Show() {
             setLoading(true);
 
             try {
-                const [patientRes, apptRes, presRes, diagRes, doctorRes] = await Promise.all([
+                const [patientRes, apptRes, presRes, diagRes] = await Promise.all([
                     axios.get(`/patients/${id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
@@ -62,15 +63,13 @@ export default function Show() {
                         params: { patient_id: id },
                         headers: { Authorization: `Bearer ${token}` },
                     }),
-                    axios.get(`/doctors`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
+                    // doctors list now retrieved via hook
                 ]);
 
                 setPatient(patientRes.data);
                 setAppointments(apptRes.data || []);
                 setPrescriptions(presRes.data || []);
-                setDoctors(doctorRes.data || []);
+                // doctors handled by hook for name lookups
                 setDiagnoses(diagRes.data || []);
             } catch (err) {
                 console.error(err);
@@ -82,11 +81,7 @@ export default function Show() {
         fetchAll();
     }, [id, token]);
 
-    // Function to get doctor name by id
-    const getDoctorNameById = (id) => {
-        const doc = doctors.find((d) => d.id === id);
-        return doc ? `${doc.first_name} ${doc.last_name}` : "Unknown";
-    };
+    // doctor name lookup provided by useDoctors hook
 
     if (loading || !patient) return <p>Loading patient...</p>;
 

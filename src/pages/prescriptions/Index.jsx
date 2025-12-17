@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 import { useAuth } from "@/hooks/useAuth";
+import { usePatients } from "@/hooks/usePatients";
+import { useDoctors } from "@/hooks/useDoctors";
+import { useDiagnoses } from "@/hooks/useDiagnoses";
 import { formatDate } from "@/utils/formatDate";
 
 import {
@@ -50,51 +53,14 @@ export default function Index() {
   }, [token]);
 
   useEffect(() => {
-    if (!token) return;
-    const fetchLists = async () => {
-      try {
-        const [patRes, docRes, diagRes] = await Promise.all([
-          axios.get("/patients", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get("/doctors", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get("/diagnoses", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-        setPatients(patRes.data);
-        setDoctors(docRes.data);
-        setDiagnoses(diagRes.data);
-      }
-      catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchLists();
+    // hook-based data handled by custom hooks
   }, [token]);
 
-  const [patients, setPatients] = useState([]);
-  const [doctors, setDoctors] = useState([]);
-  const [diagnoses, setDiagnoses] = useState([]);
+  const { getPatientNameById } = usePatients();
+  const { getDoctorNameById } = useDoctors();
+  const { getDiagnosisNameById } = useDiagnoses();
 
-  // function to get patient name by id
-  const getPatientNameById = (id) => {
-    const patient = patients.find((p) => p.id === id);
-    return patient ? `${patient.first_name} ${patient.last_name}` : "Unknown";
-  };
-
-  const getDoctorNameById = (id) => {
-    const doctor = doctors.find((d) => d.id === id);
-    return doctor ? `Dr. ${doctor.first_name} ${doctor.last_name}` : "Unknown";
-  };
-
-  const getDiagnosisConditionById = (id) => {
-    const diagnosis = diagnoses.find((d) => d.id === id);
-    return diagnosis ? diagnosis.condition : "Unknown";
-  };
+  // using hooks: getPatientNameById, getDoctorNameById, getDiagnosisNameById
 
   const onDeleteCallback = (id) => {
     toast.success("Prescription deleted successfully");
@@ -148,7 +114,7 @@ export default function Index() {
             <TableRow key={prescription.id}>
               <TableCell>{getPatientNameById(prescription.patient_id)}</TableCell>
               <TableCell>{getDoctorNameById(prescription.doctor_id)}</TableCell>
-              <TableCell>{getDiagnosisConditionById(prescription.diagnosis_id)}</TableCell>
+              <TableCell>{getDiagnosisNameById(prescription.diagnosis_id)}</TableCell>
               <TableCell>{prescription.medication}</TableCell>
               <TableCell>{prescription.dosage}</TableCell>
               <TableCell>{formatDate(prescription.start_date)}</TableCell>

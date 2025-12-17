@@ -6,6 +6,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Eye, Pencil } from "lucide-react";
 import DeleteBtn from "@/components/DeleteBtn";
 import { useAuth } from "@/hooks/useAuth";
+import { usePatients } from "@/hooks/usePatients";
+import { useDiagnoses } from "@/hooks/useDiagnoses";
 
 import {
     Table,
@@ -20,65 +22,22 @@ import { toast } from "sonner";
 import { formatDate } from "@/utils/formatDate";
 
 export default function Index() {
-    const [diagnoses, setDiagnoses] = useState([]);
     const { token } = useAuth();
+    const { getPatientNameById } = usePatients();
+    const { diagnoses, loading } = useDiagnoses();
+    const [localDiagnoses, setLocalDiagnoses] = useState([]);
     const navigate = useNavigate();
     const [patients, setPatients] = useState([]);
 
     useEffect(() => {
-        if (!token) return;
-        const fetchPatients = async () => {
-            const options = {
-                method: "GET",
-                url: "/patients",
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-            try {
-                let response = await axios.request(options);
-                console.log(response.data);
-                setPatients(response.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
+        // sync hook diagnoses into local state for UI updates (deletes)
+        setLocalDiagnoses(diagnoses || []);
+    }, [diagnoses]);
 
-        fetchPatients();
-    }, [token]);
-
-    useEffect(() => {
-        if (!token) return;
-        const fetchDiagnoses = async () => {
-            const options = {
-                method: "GET",
-                url: "/diagnoses",
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-
-            try {
-                let response = await axios.request(options);
-                console.log(response.data);
-                setDiagnoses(response.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-
-        fetchDiagnoses();
-    }, [token]);
-
-    // function to get patient name by id
-    const getPatientNameById = (id) => {
-        const patient = patients.find((p) => Number(p.id) === Number(id));
-        return patient ? `${patient.first_name} ${patient.last_name}` : "Unknown";
-    };
-
+    // use hook-provided name lookup
     const onDeleteCallback = (id) => {
         toast.success("Diagnosis deleted successfully");
-        setDiagnoses(diagnoses.filter(diagnosis => diagnosis.id !== id));
+        setLocalDiagnoses(localDiagnoses.filter(d => d.id !== id));
     };
 
     return (
@@ -114,7 +73,7 @@ export default function Index() {
                 </TableHeader>
 
                 <TableBody>
-                    {diagnoses.map((diagnosis) => (
+                    {(localDiagnoses || []).map((diagnosis) => (
                         <TableRow key={diagnosis.id}>
                             <TableCell>{diagnosis.id}</TableCell>
                             <TableCell>{getPatientNameById(diagnosis.patient_id)}</TableCell>

@@ -11,12 +11,13 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { usePatients } from "@/hooks/usePatients";
 import { formatDate } from "@/utils/formatDate";
 
 export default function Show() {
   const [doctor, setDoctor] = useState(null);
   const [doctorAppointments, setDoctorAppointments] = useState([]);
-  const [patients, setPatients] = useState([]);
+  const { getPatientNameById } = usePatients();
   const [prescriptions, setPrescriptions] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(true);
 
@@ -57,7 +58,7 @@ export default function Show() {
       try {
         const doctorId = doctor.id;
         // Fetch appointments and prescriptions in parallel
-        const [apptsRes, presRes, patients] = await Promise.all([
+        const [apptsRes, presRes] = await Promise.all([
           axios.get(`/appointments`, {
             params: { doctor_id: doctorId },
             headers: { Authorization: `Bearer ${token}` },
@@ -66,15 +67,10 @@ export default function Show() {
             params: { doctor_id: doctorId },
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("/patients", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
         ]);
-        
         // Ensure data is an array before setting state
         setDoctorAppointments(Array.isArray(apptsRes.data) ? apptsRes.data : []);
         setPrescriptions(Array.isArray(presRes.data) ? presRes.data : []);
-        setPatients(Array.isArray(patients.data) ? patients.data : []);
       } catch (err) {
         console.error(err);
         setDoctorAppointments([]);
@@ -88,11 +84,7 @@ export default function Show() {
     fetchRelated();
   }, [doctor, token]);
 
-  // function to get patient name by id
-  const getPatientNameById = (id) => {
-    const patient = patients.find((p) => p.id === id);
-    return patient ? `${patient.first_name} ${patient.last_name}` : "Unknown";
-  };
+  // using hook-provided getPatientNameById
 
   if (!doctor) return <p>Loading doctor...</p>;
 
